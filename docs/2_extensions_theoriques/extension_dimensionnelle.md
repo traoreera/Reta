@@ -40,6 +40,25 @@ Le coût computationnel de chaque expansion est **O(n)** — une intégrale, pas
 > $\bar{z}_i(T) \geq \varepsilon_i$ sur la moyenne temporelle suffit — le t_rupture est alors calculé
 > avec la perturbation moyenne $\bar{z}_i$.
 
+**Application au cas nD — Condition affaiblie par dimension :**
+
+Pour un système à $n$ dimensions avec perturbations oscillantes, on définit la moyenne temporelle sur une fenêtre $T$ :
+
+$$\bar{z}_i(T) = \frac{1}{T}\int_0^T z_i(\tau)\,d\tau, \quad i = 1, \ldots, n$$
+
+Le temps de rupture par dimension devient alors :
+
+$$t_{\text{rupture},i} \geq \frac{Y_{\max,i} - \frac{\pi}{2}}{\bar{z}_i(T)}$$
+
+Et la rupture globale au premier dépassement :
+
+$$\boxed{t_{\text{rupture global}} = \min_i\left(\frac{Y_{\max,i} - \frac{\pi}{2}}{\bar{z}_i(T)}\right)}$$
+
+> **Condition suffisante pour la validité :** $\bar{z}_i(T) \geq \varepsilon_i > 0$ pour tout $i$.
+> Si une dimension $i_0$ vérifie $\bar{z}_{i_0}(T) \leq 0$, cette dimension est **hors-cadre RETA** :
+> la dérive n'est pas persistante et le modèle ne s'applique pas sur cet axe.
+> Le système reste analysable sur les $n-1$ autres dimensions.
+
 ### 2.3 Table d'expansion
 
 | Perturbation ajoutée | Référentiel atteint | Ce qui émerge |

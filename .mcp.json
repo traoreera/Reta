@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "reta-memory": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--project",
+        "/home/eliezer/devs/mylib",
+        "python",
+        "simulations/mcp_reta_memory.py"
+      ],
+      "cwd": "/home/eliezer/devs/mylib"
+    }
+  }
+}

@@ -1,0 +1,562 @@
+{
+  "saved_at": "2026-06-20T19:22:06.022249",
+  "sessions": {
+    "test-persistance-01": {
+      "session_id": "test-persistance-01",
+      "n_tokens": 500,
+      "y_current": 0.014842000511827328,
+      "signatures": [
+        {
+          "turn_id": 1,
+          "tour_type": "expansion",
+          "eps": 0.0011873600409461863,
+          "z_mean": 0.0014842000511827327,
+          "delta_y": 0.014842000511827328,
+          "ts": "2026-06-18T20:43:36.246009",
+          "label": "Test persistance"
+        }
+      ]
+    },
+    "stress-A": {
+      "session_id": "stress-A",
+      "n_tokens": 1000,
+      "y_current": 0.05296162002743893,
+      "signatures": [
+        {
+          "turn_id": 1,
+          "tour_type": "expansion",
+          "eps": 0.0017851484105136782,
+          "z_mean": 0.0022314355131420978,
+          "delta_y": 0.02231435513142098,
+          "ts": "2026-06-18T20:49:29.269703",
+          "label": "signal-1"
+        },
+        {
+          "turn_id": 2,
+          "tour_type": "contraction",
+          "eps": 0.0017208910369355642,
+          "z_mean": 0.002151113796169455,
+          "delta_y": 0.010755568980847275,
+          "ts": "2026-06-18T20:49:47.040852",
+          "label": "correction-eps"
+        },
+        {
+          "turn_id": 3,
+          "tour_type": "stabilisation",
+          "eps": 0.0013241155078205873,
+          "z_mean": 0.001655144384775734,
+          "delta_y": 0.00827572192387867,
+          "ts": "2026-06-18T20:50:03.903863",
+          "label": "attente-confirmation"
+        },
+        {
+          "turn_id": 4,
+          "tour_type": "expansion",
+          "eps": 0.0016561133550746091,
+          "z_mean": 0.0020701416938432612,
+          "delta_y": 0.020701416938432613,
+          "ts": "2026-06-18T20:50:14.485342",
+          "label": "bull-confirm"
+        },
+        {
+          "turn_id": 5,
+          "tour_type": "expansion",
+          "eps": 0.0016561133550746091,
+          "z_mean": 0.0020701416938432612,
+          "delta_y": 0.020701416938432613,
+          "ts": "2026-06-18T20:50:29.450451",
+          "label": "ordre-ouvert"
+        }
+      ]
+    },
+    "stress-B": {
+      "session_id": "stress-B",
+      "n_tokens": 2000,
+      "y_current": 0.05630603202843102,
+      "signatures": [
+        {
+          "turn_id": 1,
+          "tour_type": "expansion",
+          "eps": 0.0019121352037639993,
+          "z_mean": 0.002390169004704999,
+          "delta_y": 0.023901690047049992,
+          "ts": "2026-06-18T20:49:37.719253",
+          "label": "init-multi-asset"
+        },
+        {
+          "turn_id": 2,
+          "tour_type": "expansion",
+          "eps": 0.0017851484105136782,
+          "z_mean": 0.0022314355131420978,
+          "delta_y": 0.02231435513142098,
+          "ts": "2026-06-18T20:49:55.355236",
+          "label": "fusion-decision"
+        },
+        {
+          "turn_id": 3,
+          "tour_type": "expansion",
+          "eps": 0.002037137746988646,
+          "z_mean": 0.0025464221837358074,
+          "delta_y": 0.025464221837358074,
+          "ts": "2026-06-18T20:50:09.657014",
+          "label": "tri-asset-fusion"
+        },
+        {
+          "turn_id": 4,
+          "tour_type": "contraction",
+          "eps": 0.002459877597983685,
+          "z_mean": 0.0030748469974796063,
+          "delta_y": 0.015374234987398032,
+          "ts": "2026-06-18T20:50:21.598398",
+          "label": "flash-crash-ETH"
+        }
+      ]
+    },
+    "stress-checkpoint": {
+      "session_id": "stress-checkpoint",
+      "n_tokens": 1000,
+      "y_current": 0.08979631470528245,
+      "signatures": [
+        {
+          "turn_id": 1,
+          "tour_type": "expansion",
+          "eps": 7.960264682534467e-05,
+          "z_mean": 9.950330853168083e-05,
+          "delta_y": 0.0009950330853168083,
+          "ts": "2026-06-18T20:54:33.238428",
+          "label": "t2"
+        },
+        {
+          "turn_id": 2,
+          "tour_type": "expansion",
+          "eps": 0.00023647041793235522,
+          "z_mean": 0.000295588022415444,
+          "delta_y": 0.00295588022415444,
+          "ts": "2026-06-18T20:54:45.140995",
+          "label": "t3 signal z>eps"
+        },
+        {
+          "turn_id": 3,
+          "tour_type": "contraction",
+          "eps": 0.00039032131335545606,
+          "z_mean": 0.0004879016416943201,
+          "delta_y": 0.0024395082084716,
+          "ts": "2026-06-18T20:55:02.444536",
+          "label": "auto-3"
+        },
+        {
+          "turn_id": 4,
+          "tour_type": "stabilisation",
+          "eps": 0.00039032131335545606,
+          "z_mean": 0.0004879016416943201,
+          "delta_y": 0.0024395082084716,
+          "ts": "2026-06-18T20:55:02.445396",
+          "label": "auto-4"
+        },
+        {
+          "turn_id": 5,
+          "tour_type": "expansion",
+          "eps": 0.00046615126499180627,
+          "z_mean": 0.0005826890812397578,
+          "delta_y": 0.005826890812397578,
+          "ts": "2026-06-18T20:55:02.446445",
+          "label": "auto-5"
+        },
+        {
+          "turn_id": 6,
+          "tour_type": "expansion",
+          "eps": 0.000762481438434599,
+          "z_mean": 0.0009531017980432487,
+          "delta_y": 0.009531017980432488,
+          "ts": "2026-06-18T20:55:02.447053",
+          "label": "auto-6"
+        },
+        {
+          "turn_id": 7,
+          "tour_type": "expansion",
+          "eps": 0.0006156883290890266,
+          "z_mean": 0.0007696104113612833,
+          "delta_y": 0.007696104113612832,
+          "ts": "2026-06-18T20:55:02.447667",
+          "label": "auto-7"
+        },
+        {
+          "turn_id": 8,
+          "tour_type": "contraction",
+          "eps": 0.00039032131335545606,
+          "z_mean": 0.0004879016416943201,
+          "delta_y": 0.0024395082084716,
+          "ts": "2026-06-18T20:55:02.448308",
+          "label": "auto-8"
+        },
+        {
+          "turn_id": 9,
+          "tour_type": "stabilisation",
+          "eps": 0.00039032131335545606,
+          "z_mean": 0.0004879016416943201,
+          "delta_y": 0.0024395082084716,
+          "ts": "2026-06-18T20:55:02.448960",
+          "label": "auto-9"
+        },
+        {
+          "turn_id": 10,
+          "tour_type": "expansion",
+          "eps": 0.00046615126499180627,
+          "z_mean": 0.0005826890812397578,
+          "delta_y": 0.005826890812397578,
+          "ts": "2026-06-18T20:55:02.449763",
+          "label": "auto-10"
+        },
+        {
+          "turn_id": 11,
+          "tour_type": "expansion",
+          "eps": 0.000762481438434599,
+          "z_mean": 0.0009531017980432487,
+          "delta_y": 0.009531017980432488,
+          "ts": "2026-06-18T20:55:02.450543",
+          "label": "auto-11"
+        },
+        {
+          "turn_id": 12,
+          "tour_type": "expansion",
+          "eps": 0.0006156883290890266,
+          "z_mean": 0.0007696104113612833,
+          "delta_y": 0.007696104113612832,
+          "ts": "2026-06-18T20:55:02.451410",
+          "label": "auto-12"
+        },
+        {
+          "turn_id": 13,
+          "tour_type": "contraction",
+          "eps": 0.00039032131335545606,
+          "z_mean": 0.0004879016416943201,
+          "delta_y": 0.0024395082084716,
+          "ts": "2026-06-18T20:55:02.452232",
+          "label": "auto-13"
+        },
+        {
+          "turn_id": 14,
+          "tour_type": "stabilisation",
+          "eps": 0.00039032131335545606,
+          "z_mean": 0.0004879016416943201,
+          "delta_y": 0.0024395082084716,
+          "ts": "2026-06-18T20:55:02.452919",
+          "label": "auto-14"
+        },
+        {
+          "turn_id": 15,
+          "tour_type": "expansion",
+          "eps": 0.00046615126499180627,
+          "z_mean": 0.0005826890812397578,
+          "delta_y": 0.005826890812397578,
+          "ts": "2026-06-18T20:55:02.453642",
+          "label": "auto-15"
+        },
+        {
+          "turn_id": 16,
+          "tour_type": "expansion",
+          "eps": 0.000762481438434599,
+          "z_mean": 0.0009531017980432487,
+          "delta_y": 0.009531017980432488,
+          "ts": "2026-06-18T20:55:02.454480",
+          "label": "auto-16"
+        },
+        {
+          "turn_id": 17,
+          "tour_type": "expansion",
+          "eps": 0.0006156883290890266,
+          "z_mean": 0.0007696104113612833,
+          "delta_y": 0.007696104113612832,
+          "ts": "2026-06-18T20:55:02.455267",
+          "label": "auto-17"
+        },
+        {
+          "turn_id": 18,
+          "tour_type": "contraction",
+          "eps": 0.00039032131335545606,
+          "z_mean": 0.0004879016416943201,
+          "delta_y": 0.0024395082084716,
+          "ts": "2026-06-18T20:55:02.456222",
+          "label": "auto-18"
+        },
+        {
+          "turn_id": 19,
+          "tour_type": "stabilisation",
+          "eps": 0.00039032131335545606,
+          "z_mean": 0.0004879016416943201,
+          "delta_y": 0.0024395082084716,
+          "ts": "2026-06-18T20:55:02.457099",
+          "label": "auto-19"
+        },
+        {
+          "turn_id": 20,
+          "tour_type": "expansion",
+          "eps": 0.00046615126499180627,
+          "z_mean": 0.0005826890812397578,
+          "delta_y": 0.005826890812397578,
+          "ts": "2026-06-18T20:55:02.457818",
+          "label": "auto-20"
+        },
+        {
+          "turn_id": 21,
+          "tour_type": "expansion",
+          "eps": 0.000762481438434599,
+          "z_mean": 0.0009531017980432487,
+          "delta_y": 0.009531017980432488,
+          "ts": "2026-06-18T20:55:02.458519",
+          "label": "auto-21"
+        },
+        {
+          "turn_id": 22,
+          "tour_type": "expansion",
+          "eps": 0.0006156883290890266,
+          "z_mean": 0.0007696104113612833,
+          "delta_y": 0.007696104113612832,
+          "ts": "2026-06-18T20:55:02.459298",
+          "label": "auto-22"
+        },
+        {
+          "turn_id": 23,
+          "tour_type": "contraction",
+          "eps": 0.00039032131335545606,
+          "z_mean": 0.0004879016416943201,
+          "delta_y": 0.0024395082084716,
+          "ts": "2026-06-18T20:55:02.460021",
+          "label": "auto-23"
+        },
+        {
+          "turn_id": 24,
+          "tour_type": "stabilisation",
+          "eps": 0.00039032131335545606,
+          "z_mean": 0.0004879016416943201,
+          "delta_y": 0.0024395082084716,
+          "ts": "2026-06-18T20:55:02.460730",
+          "label": "auto-24"
+        },
+        {
+          "turn_id": 25,
+          "tour_type": "expansion",
+          "eps": 0.00046615126499180627,
+          "z_mean": 0.0005826890812397578,
+          "delta_y": 0.005826890812397578,
+          "ts": "2026-06-18T20:55:02.461672",
+          "label": "auto-25"
+        }
+      ]
+    },
+    "hunters": {
+      "session_id": "hunters",
+      "n_tokens": 1000,
+      "y_current": 0.032208349916911336,
+      "signatures": [
+        {
+          "turn_id": 1,
+          "tour_type": "expansion",
+          "eps": 0.002576667993352907,
+          "z_mean": 0.0032208349916911334,
+          "delta_y": 0.032208349916911336,
+          "ts": "2026-06-18T21:07:37.350411",
+          "label": "init-extraction"
+        },
+        {
+          "turn_id": 2,
+          "tour_type": "stabilisation",
+          "eps": 0.0022814315378692994,
+          "z_mean": 0.002851789422336624,
+          "delta_y": 0.01425894711168312,
+          "ts": "2026-06-18T21:07:57.978566",
+          "label": "validation-extraction"
+        }
+      ]
+    },
+    "synthese-session-2026": {
+      "session_id": "synthese-session-2026",
+      "n_tokens": 1200,
+      "y_current": 0.14020591526945142,
+      "signatures": [
+        {
+          "turn_id": 1,
+          "tour_type": "expansion",
+          "eps": 0.002459877597983685,
+          "z_mean": 0.0030748469974796063,
+          "delta_y": 0.030748469974796064,
+          "ts": "2026-06-18T21:25:43.298359",
+          "label": "reorganisation-docs"
+        },
+        {
+          "turn_id": 2,
+          "tour_type": "expansion",
+          "eps": 0.002805254972905355,
+          "z_mean": 0.0035065687161316933,
+          "delta_y": 0.03506568716131693,
+          "ts": "2026-06-18T21:26:03.446261",
+          "label": "analyse-theorique-viabilite"
+        },
+        {
+          "turn_id": 3,
+          "tour_type": "expansion",
+          "eps": 0.0025184859187202687,
+          "z_mean": 0.0031481073984003355,
+          "delta_y": 0.031481073984003356,
+          "ts": "2026-06-18T21:27:01.067851",
+          "label": "architecture-pipeline"
+        },
+        {
+          "turn_id": 4,
+          "tour_type": "stabilisation",
+          "eps": 0.003027491485761961,
+          "z_mean": 0.003784364357202451,
+          "delta_y": 0.018921821786012254,
+          "ts": "2026-06-18T21:27:57.824416",
+          "label": "avantages-competitifs-conclusion"
+        },
+        {
+          "turn_id": 5,
+          "tour_type": "expansion",
+          "eps": 0.002576667993352907,
+          "z_mean": 0.0032208349916911334,
+          "delta_y": 0.032208349916911336,
+          "ts": "2026-06-20T18:43:09.981396",
+          "label": "probleme-borne-conservative-facteur4"
+        },
+        {
+          "turn_id": 6,
+          "tour_type": "contraction",
+          "eps": 0.002805254972905355,
+          "z_mean": 0.0035065687161316933,
+          "delta_y": 0.017532843580658465,
+          "ts": "2026-06-20T18:43:19.545512",
+          "label": "bug-critique-lyapunov-terme-ki-manquant"
+        },
+        {
+          "turn_id": 7,
+          "tour_type": "contraction",
+          "eps": 0.0031902089596589425,
+          "z_mean": 0.003987761199573678,
+          "delta_y": 0.01993880599786839,
+          "ts": "2026-06-20T18:43:29.062559",
+          "label": "bug-dimensions-lois-adaptation-v12"
+        },
+        {
+          "turn_id": 8,
+          "tour_type": "contraction",
+          "eps": 0.003506039447449243,
+          "z_mean": 0.004382549309311553,
+          "delta_y": 0.021912746546557768,
+          "ts": "2026-06-20T18:43:35.382866",
+          "label": "limitation-application-llm-analogie-non-formelle"
+        },
+        {
+          "turn_id": 9,
+          "tour_type": "stabilisation",
+          "eps": 0.0034542593314043028,
+          "z_mean": 0.004317824164255378,
+          "delta_y": 0.02158912082127689,
+          "ts": "2026-06-20T18:43:43.323650",
+          "label": "roadmap-5etapes-implementation"
+        },
+        {
+          "turn_id": 10,
+          "tour_type": "stabilisation",
+          "eps": 0.002691777892969704,
+          "z_mean": 0.0033647223662121297,
+          "delta_y": 0.01682361183106065,
+          "ts": "2026-06-20T18:46:51.655813",
+          "label": "fix-lyapunov-candidat-corrige"
+        },
+        {
+          "turn_id": 11,
+          "tour_type": "stabilisation",
+          "eps": 0.0024008367396027045,
+          "z_mean": 0.0030010459245033805,
+          "delta_y": 0.015005229622516903,
+          "ts": "2026-06-20T18:46:58.788244",
+          "label": "fix-dimensions-normalisation-eref"
+        },
+        {
+          "turn_id": 12,
+          "tour_type": "stabilisation",
+          "eps": 0.0036086049548817336,
+          "z_mean": 0.004510756193602167,
+          "delta_y": 0.022553780968010834,
+          "ts": "2026-06-20T19:06:23.010143",
+          "label": "correctifs-4-appliqu-s-docs"
+        },
+        {
+          "turn_id": 13,
+          "tour_type": "expansion",
+          "eps": 0.0029725084514598647,
+          "z_mean": 0.003715635564324831,
+          "delta_y": 0.03715635564324831,
+          "ts": "2026-06-20T19:06:30.287276",
+          "label": "dossier-6-domaines-33-cas-application"
+        },
+        {
+          "turn_id": 14,
+          "tour_type": "expansion",
+          "eps": 0.0026344299771408034,
+          "z_mean": 0.003293037471426004,
+          "delta_y": 0.03293037471426004,
+          "ts": "2026-06-20T19:22:06.022218",
+          "label": "drone-3d-modele-complet-reta-nd"
+        }
+      ]
+    }
+  },
+  "referentiels": {
+    "TEST-REF": {
+      "eps": 0.0008,
+      "z_last": 0.00722543,
+      "t_rup": 27.68,
+      "phase": "NEUTRE",
+      "P_inf": 0.05965182,
+      "n": 10,
+      "version": "v1.3"
+    },
+    "SOL-stress": {
+      "eps": 0.0008,
+      "z_last": 0.01135312,
+      "t_rup": 17.62,
+      "phase": "BULL",
+      "P_inf": 0.01902713,
+      "n": 30,
+      "version": "v1.3"
+    },
+    "BTC-stress": {
+      "eps": 0.0008,
+      "z_last": 0.00390359,
+      "t_rup": 51.23,
+      "phase": "BULL",
+      "P_inf": 0.01826042,
+      "n": 30,
+      "version": "v1.3"
+    },
+    "ETH-stress": {
+      "eps": 0.0008,
+      "z_last": -0.00703128,
+      "t_rup": 28.44,
+      "phase": "BEAR",
+      "P_inf": 0.01820513,
+      "n": 30,
+      "version": "v1.3"
+    },
+    "BTCSOL-60": {
+      "eps": 0.0008,
+      "z_last": 0.0068834,
+      "t_rup": 29.06,
+      "phase": "BULL",
+      "P_inf": 0.0185671,
+      "n": 30,
+      "version": "v1.3"
+    },
+    "PORTFOLIO-FINAL": {
+      "eps": 0.0008,
+      "z_last": 0.00410046,
+      "t_rup": 48.77,
+      "phase": "BULL",
+      "P_inf": 0.01849471,
+      "n": 30,
+      "version": "v1.3"
+    }
+  }
+}

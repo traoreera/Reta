@@ -220,9 +220,11 @@ On pose le vecteur d'état augmenté $[e(t),\ I(t)]$ avec $I(t) = \int_0^t e(\ta
 
 **Fonction de Lyapunov candidate :**
 
-$$V(e, I) = \frac{1}{2}e(t)^2 + \frac{K_i}{2K_p}I(t)^2$$
+$$V(e, I) = \frac{1}{2}e(t)^2 + \frac{K_i}{2}I(t)^2$$
 
-$V$ est définie positive car $K_p > 0$ et $K_i > 0$.
+$V$ est définie positive car $K_i > 0$.
+
+> **Note :** Le coefficient de $I^2$ est $K_i/2$, et non $K_i/(2K_p)$. Ce choix est précisément celui qui annule les termes croisés dans $\dot{V}$ (voir calcul ci-dessous).
 
 **Calcul de $\dot{V}$ :**
 
@@ -230,11 +232,11 @@ La dynamique de l'erreur découle de l'équation du système régulé (section 4
 
 $$\dot{e}(t) = \dot{y}(t) = f'(t) + z(t) - K_p\,e(t) - K_i\,I(t)$$
 
-Donc :
+Donc ($\dot{I} = e$) :
 
-$$\dot{V} = e\,\dot{e} + \frac{K_i}{K_p}I\,\dot{I} = e\bigl[f'(t) + z(t) - K_p\,e - K_i\,I\bigr] + \frac{K_i}{K_p}I\,e$$
+$$\dot{V} = e\,\dot{e} + K_i\,I\,\dot{I} = e\bigl[f'(t) + z(t) - K_p\,e - K_i\,I\bigr] + K_i\,I\,e$$
 
-Les termes $-K_i\,e\,I$ et $+\frac{K_i}{K_p}I\,e$ ne se simplifient pas complètement ; en développant :
+Les termes croisés s'annulent exactement : $-K_i\,e\,I + K_i\,I\,e = 0$. Il reste :
 
 $$\boxed{\dot{V} = -K_p\,e^2 + e\bigl[f'(t) + z(t)\bigr]}$$
 
@@ -341,6 +343,12 @@ Le correcteur PI v1.2 ne dispose plus de gains constants. Kp(t) et Ki(t) sont de
 
 Soient $\gamma_p > 0$ et $\gamma_i > 0$ les taux d'apprentissage (*learning rates*) et $\theta > 0$ un seuil de tolérance (*bande morte*).
 
+**Normalisation préalable (impérative pour la portabilité) :**
+
+Les lois d'adaptation opèrent sur l'erreur **normalisée** $\bar{e}(t) = e(t)/e_{ref}$ et l'intégrale normalisée $\bar{I}(t) = I(t)/e_{ref}$, où $e_{ref}$ est une erreur de référence caractéristique du système (ex. : 10 % de $Y_{max}$). Cette normalisation rend $\bar{e}$ sans dimension et les taux $\gamma_p$, $\gamma_i$ purement en $[\text{gain}/\text{s}]$, indépendants de l'unité de $e$.
+
+$$\bar{e}(t) = \frac{e(t)}{e_{ref}}, \quad \bar{\theta} = \frac{\theta}{e_{ref}}, \quad e_{ref} > 0$$
+
 ### 10.2 Lois d'adaptation
 
 Deux familles de lois sont disponibles, avec des propriétés de stabilité différentes :
@@ -349,15 +357,15 @@ Deux familles de lois sont disponibles, avec des propriétés de stabilité diff
 
 **1. Adaptation de $K_i$ — Réaction à la persistance de l'erreur :**
 
-$$\dot{K_i}(t) = \gamma_i \cdot |e(t)| \cdot \text{sgn}\left(\int_0^t e(\tau)\,d\tau\right)$$
+$$\dot{K_i}(t) = \gamma_i \cdot |\bar{e}(t)| \cdot \text{sgn}\left(\int_0^t \bar{e}(\tau)\,d\tau\right)$$
 
 **2. Adaptation de $K_p$ — Gestion de la nervosité :**
 
-$$\dot{K_p}(t) = \gamma_p \cdot (|e(t)| - \theta)$$
+$$\dot{K_p}(t) = \gamma_p \cdot (|\bar{e}(t)| - \bar{\theta})$$
 
 *Logique :*
-- Si $|e(t)| > \theta$ : $K_p$ augmente → réaction plus agressive.
-- Si $|e(t)| < \theta$ : $K_p$ diminue → amortissement progressif.
+- Si $|\bar{e}(t)| > \bar{\theta}$ : $K_p$ augmente → réaction plus agressive.
+- Si $|\bar{e}(t)| < \bar{\theta}$ : $K_p$ diminue → amortissement progressif.
 
 > **Avertissement :** Ces lois sont **heuristiques**. Le critère de Routh ne s'applique plus
 > ($K_p(t)$ varie). La stabilité doit être vérifiée par simulation. Utiliser en priorité
@@ -367,7 +375,7 @@ $$\dot{K_p}(t) = \gamma_p \cdot (|e(t)| - \theta)$$
 
 Avec le candidat de Lyapunov $V = \frac{1}{2}e^2 + \frac{1}{2\gamma_p}\tilde{K}_p^2 + \frac{1}{2\gamma_i}\tilde{K}_i^2$ (où $\tilde{K} = K - K^*$) :
 
-$$\boxed{\dot{K}_p = \gamma_p \cdot e^2, \qquad \dot{K}_i = \gamma_i \cdot e \cdot \int_0^t e\,d\tau}$$
+$$\boxed{\dot{K}_p = \gamma_p \cdot \bar{e}^2, \qquad \dot{K}_i = \gamma_i \cdot \bar{e} \cdot \int_0^t \bar{e}\,d\tau}$$
 
 Ces lois annulent les termes croisés dans $\dot{V}$, donnant :
 
@@ -437,11 +445,17 @@ Un système v1.3 peut être déployé sans paramétrage préalable. Il "apprend"
 | v1.1 | RETA-Kalman | Fusion Perception/Action (Anti-bruit) |
 | v1.2 | Adaptive RETA | Auto-correction des gains (Self-Tuning) |
 | v1.3 | Chameleon RETA | Auto-paramétrage intégral (Q, R, Kp, Ki) |
+| v1.4 | Conservative RETA | Bound t_rup conservatif via tracking ḃ_true |
 
 ---
 
-*Document en cours — système complet*
+*Document de référence théorique — voir [docs/VERSIONS.md](../VERSIONS.md) pour les simulations et résultats par version.*
+
+## Références
+- Bibliographie centrale : [docs/bibliographie.md](../bibliographie.md)
+
 ---
+
 ## 🧭 Navigation
 - [📖 Index de la Documentation](../INDEX.md)
 - [🏠 Accueil du Projet](../../README.md)

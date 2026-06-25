@@ -35,10 +35,40 @@ Bienvenue dans l'index central de la **Referential Escape Theory by Accumulation
 - [Vision Stratégique](./5_strategie/vision_strategique.md) : Le problème de l'asymptote trompeuse.
 - [Survie et Avenir](./5_strategie/survie_et_avenir.md) : Analyse de viabilité structurelle.
 
+### [6. Domaines d'Application](./6_domaines_application/README.md)
+*Cartographie détaillée de tous les domaines où RETA intervient.*
+- [Finance & Marchés](./6_domaines_application/finance.md) : Portefeuilles, crypto, drawdown, volatilité.
+- [Intelligence Artificielle & LLM](./6_domaines_application/ia_llm.md) : Dérive sémantique, distribution shift, fine-tuning, jailbreak.
+- [Systèmes Physiques](./6_domaines_application/physique.md) : Thermique, navigation inertielle, fatigue mécanique, batterie.
+- [Cybersécurité](./6_domaines_application/cybersecurite.md) : Exfiltration L&S, APT, DDoS, poisoning IA, vulnerability debt.
+- [Santé & Biomédical](./6_domaines_application/sante.md) : Glycémie, pharmacocinétique, fatigue opérateur, oncologie, IRC.
+- [Infrastructure & Logistique](./6_domaines_application/infrastructure.md) : Supply chain, réseau électrique, congestion, corrosion, dette technique.
+- [Sciences Sociales & Comportement](./6_domaines_application/social.md) : Polarisation, réputation, cohésion équipe, propagation virale, dette souveraine.
+
+---
+
+### [Versions RETA](./VERSIONS.md)
+*Implémentations progressives avec simulations et preuves par version.*
+- [v1.1 — Kalman fixe + PI fixe](./v1.1/README.md) : Version de référence, Routh-Hurwitz + Lyapunov.
+- [v1.2 — PI adaptatif gradient](./v1.2/README.md) : K̇p = γp·ē², K̇i = γi·ē·∫ē — survie aux sauts de perturbation.
+- [v1.3 — Kalman adaptatif + PI adaptatif](./v1.3/README.md) : Q adaptatif par innovations GPS, ×3.7 survie en dead-reckoning.
+- [v1.4 — Bound conservatif ḃ_true](./v1.4/README.md) : Corrige la limite de v1.3 — bound t_rup reste sous la rupture réelle même quand z croît.
+- [Résumé comparatif](./VERSIONS.md) : Tableau, architecture, preuves Lyapunov par version.
+
+---
+
+### [Bibliographie](./bibliographie.md)
+*Références théoriques, sources de données et correspondance formule → origine.*
+
+---
+
+### [Benchmarks NASA](./benchmarks.md)
+*Benchmark GISTEMP v4 pour `v1.1` à `v1.4` avec résultats reproductibles.*
+
 ---
 
 ## 🛠 Outils & Simulations
-Les scripts de validation se trouvent dans le dossier `/simulations` à la racine du projet.
+Chaque version possède sa propre simulation autonome dans `docs/v1.X/simulation.py`.
 
 ---
 [🏠 Retour à l'accueil](../../README.md)

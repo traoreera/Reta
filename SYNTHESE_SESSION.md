@@ -43,4 +43,3 @@ RETA apporte trois avantages compétitifs :
 3. **Interprétabilité** : Appliquer des modèles physiques pour rendre les systèmes (même l'IA) compréhensibles et explicables.
 
 ---
-*Synthèse générée par Gemini CLI.*
