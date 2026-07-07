@@ -21,6 +21,13 @@ $$\lim_{t \to +\infty} f(t) = L = \frac{\pi}{2}$$
 
 **Interprétation :** f'(t) → 0 quand t → +∞. Le système « s'endort » et sa dynamique devient négligeable.
 
+**Lemme 1 (généralisation de la fonction de base) :**
+Soit $f \in C^1(\mathbb{R}^+)$ telle que $\lim_{t\to\infty} f(t) = L < \infty$ et $\lim_{t\to\infty} f'(t) = 0$. Alors pour toute perturbation $z(t) \geq \varepsilon > 0$ :
+
+$$y(t) = f(t) + \int_0^t z(\tau)\,d\tau \sim \int_0^t z(\tau)\,d\tau \quad \text{quand } t \to \infty$$
+
+et le temps de rupture $t_{rup}$ vérifie $t_{rup} = (Y_{\max} - L)/\varepsilon$ en borne conservative, **indépendamment du choix de $f$**. L'exemple $\arctan(t)$ est un cas particulier avec $L = \pi/2$ et $\|f'\|_\infty = 1$.
+
 ---
 
 ## 2. Le Système Libre Perturbé — Prédiction de la dérive
@@ -204,6 +211,10 @@ $$t_{montée} < t_{stable} < t_{rupture}$$
 
 ## 6. Preuve de Stabilité du Système Régulé
 
+**Hypothèse préalable :** On suppose que la perturbation $z(t)$ est uniformément bornée supérieurement :
+$$\exists Z_{\max} > 0 \ \text{tel que} \ |z(t)| \leq Z_{\max} \ \forall t \geq 0$$
+Cette hypothèse est physique : aucune perturbation réelle n'est infinie. La borne doit être estimée à partir du système cible. La fonction $f'(t) = \frac{1}{1+t^2}$ est quant à elle bornée par $\|f'\|_\infty = 1$.
+
 ### 6.1 Fonction de transfert en boucle fermée (transformée de Laplace)
 
 $$H(s) = \frac{K_p \cdot s + K_i}{s^2 + K_p \cdot s + K_i}$$
@@ -214,7 +225,7 @@ $$K_p > 0 \quad \text{et} \quad K_i > 0$$
 
 Les pôles sont à partie réelle strictement négative si et seulement si ces deux conditions sont vérifiées.
 
-### 6.2 Approche de Lyapunov (pour cas non-linéaire)
+### 6.2 Approche de Lyapunov — Stabilité ISS (Input-to-State Stability)
 
 On pose le vecteur d'état augmenté $[e(t),\ I(t)]$ avec $I(t) = \int_0^t e(\tau)\,d\tau$, de sorte que $\dot{I}(t) = e(t)$.
 
@@ -240,23 +251,27 @@ Les termes croisés s'annulent exactement : $-K_i\,e\,I + K_i\,I\,e = 0$. Il res
 
 $$\boxed{\dot{V} = -K_p\,e^2 + e\bigl[f'(t) + z(t)\bigr]}$$
 
-**Analyse de stabilité pratique :**
+**Analyse ISS (stabilité entrée-état) :**
 
-Le terme $-K_p e^2$ est toujours négatif. Le terme $e[f'(t) + z(t)]$ est borné car $f'(t) = \frac{1}{1+t^2} \leq 1$ et $z(t)$ est borné supérieurement par $z_{max} = 2 + \sqrt{2}$.
+Soit $w(t) = f'(t) + z(t)$. Par hypothèse, $|w(t)| \leq \|f'\|_\infty + Z_{\max} = 1 + Z_{\max}$.
+
+En complétant le carré :
+
+$$\dot{V} = -K_p\,e^2 + e\,w \leq -K_p|e|^2 + |e|(1 + Z_{\max})$$
+
+$$\dot{V} \leq -|e|\bigl(K_p|e| - (1 + Z_{\max})\bigr)$$
 
 $\dot{V} < 0$ est garanti dès que :
 
-$$K_p|e| > |f'(t) + z(t)| \leq 1 + z_{max} = 3 + \sqrt{2} \approx 4{,}41$$
+$$|e| > \frac{1 + Z_{\max}}{K_p}$$
 
-$$\Rightarrow \quad |e| > \frac{3 + \sqrt{2}}{K_p}$$
+**Conclusion (stabilité ISS) :** L'erreur converge vers une **bande résiduelle** bornée :
 
-**Conclusion (stabilité pratique) :** L'erreur converge vers une **bande résiduelle** bornée :
+$$\boxed{|e(t)| \leq \frac{1 + Z_{\max}}{K_p} \quad \text{(à long terme)}}$$
 
-$$|e(t)| \leq \frac{3 + \sqrt{2}}{K_p} \quad \text{(à long terme)}$$
+Plus $K_p$ est grand, plus cette bande se resserre. Le système est **stable au sens ISS** (Input-to-State Stability) : l'erreur est bornée par la perturbation normalisée par $K_p$, et tend vers 0 si $K_p \to \infty$ ou si la perturbation s'annule.
 
-Plus $K_p$ est grand, plus cette bande se resserre. Le système est **pratiquement stable** (Ultimate Boundedness) : l'erreur ne converge pas nécessairement vers zéro exact, mais reste confinée dans un voisinage de zéro dont la taille est inversement proportionnelle à $K_p$.
-
-> **Note :** La stabilité asymptotique stricte ($e \to 0$) n'est pas garantie tant que $z(t) > 0$, ce qui est cohérent avec la nature de la perturbation persistante — le correcteur PI *compense* la dérive mais ne l'annule pas à chaque instant.
+> **Note :** La stabilité asymptotique stricte ($e \to 0$) n'est pas garantie tant que $z(t) > 0$, ce qui est cohérent avec la nature de la perturbation persistante — le correcteur PI *compense* la dérive mais ne l'annule pas à chaque instant. Le formalisme ISS remplace l'estimation ad-hoc précédente ($3+\sqrt{2}$) par une expression générale dépendant de $Z_{\max}$, qui doit être identifié par analyse du système ou via le Kalman adaptatif (v1.3).
 
 ---
 
@@ -313,11 +328,23 @@ Dans un environnement réel (bruit de mesure, incertitude), le système ne peut 
 3. **Optimisation du t_rupture :** La prédiction devient stable et basée sur une tendance filtrée.
 
 ### 8.2 Modèle d'Espace d'État RETA
-Soit le vecteur d'état $x = [y, z]^T$. Le modèle discret est :
 
-$$x_{k+1} = \begin{pmatrix} 1 & \Delta t \\ 0 & 1 \end{pmatrix} x_k + \begin{pmatrix} \Delta f \\ 0 \end{pmatrix} + w_k$$
+La version implémentée (cf. `reta/kalman.py`) estime non pas $y$ mais la perturbation $z$ et sa dérivée $\dot{z}$. Soit le vecteur d'état $x = [z,\ \dot{z}]^T$.
 
-L'observation est : $y_{mesuré} = \begin{pmatrix} 1 & 0 \end{pmatrix} x_k + v_k$
+**Modèle de marche aléatoire avec vitesse (position-velocity) :**
+
+$$x_{k+1} = \begin{pmatrix} 1 & \Delta t \\ 0 & 1 \end{pmatrix} x_k + w_k, \qquad w_k \sim \mathcal{N}(0, Q)$$
+
+**Observation :** on mesure directement le log-rendement $r_k = \log(p_k/p_{k-1})$, qui approxime $z_k$ :
+
+$$r_k = \begin{pmatrix} 1 & 0 \end{pmatrix} x_k + v_k, \qquad v_k \sim \mathcal{N}(0, R)$$
+
+**Justification :** On ne filtre pas $y$ (la position) mais $z$ (la pente), car :
+- $z$ est la quantité physiquement significative pour la détection de tendance et le calcul de $t_{rup}$
+- Le modèle position-vitesse sur $z$ permet d'estimer $\dot{z}$, nécessaire à la borne conservative v1.4
+- L'erreur d'estimation sur $y$ s'obtient par intégration de $\hat{z}$, avec variance $P_{00}$ bornée
+
+**Observabilité :** Le rang de la matrice d'observabilité $\mathcal{O} = [H;\ HA]^T$ est 2 (plein rang), donc l'état $[z,\ \dot{z}]$ est observable dès que $R$ est finie.
 
 ### 8.3 Intégration dans la boucle de contrôle
 Le correcteur PI n'agit plus sur $y(t) - Y_c$, mais sur l'état estimé :
@@ -371,17 +398,21 @@ $$\dot{K_p}(t) = \gamma_p \cdot (|\bar{e}(t)| - \bar{\theta})$$
 > ($K_p(t)$ varie). La stabilité doit être vérifiée par simulation. Utiliser en priorité
 > les lois gradient ci-dessous si la garantie de stabilité est requise.
 
-#### Lois gradient (prouvables par Lyapunov — recommandées)
-
-Avec le candidat de Lyapunov $V = \frac{1}{2}e^2 + \frac{1}{2\gamma_p}\tilde{K}_p^2 + \frac{1}{2\gamma_i}\tilde{K}_i^2$ (où $\tilde{K} = K - K^*$) :
+#### Lois gradient (prouvables par Lyapunov + Barbalat — recommandées)
 
 $$\boxed{\dot{K}_p = \gamma_p \cdot \bar{e}^2, \qquad \dot{K}_i = \gamma_i \cdot \bar{e} \cdot \int_0^t \bar{e}\,d\tau}$$
 
-Ces lois annulent les termes croisés dans $\dot{V}$, donnant :
+**Preuve de convergence :**
+
+Soit le candidat de Lyapunov $V = \frac{1}{2}e^2 + \frac{1}{2\gamma_p}\tilde{K}_p^2 + \frac{1}{2\gamma_i}\tilde{K}_i^2$ où $\tilde{K}_p = K_p - K_p^*$ et $\tilde{K}_i = K_i - K_i^*$ sont les écarts à des gains cibles inconnus mais constants. En dérivant et en choisissant les lois d'adaptation pour annuler les termes en $\tilde{K}_p$ et $\tilde{K}_i$ :
 
 $$\dot{V} = -K_p^* e^2 + e \cdot w(t)$$
 
-Pour $K_p^* > |w|_{\max}$ et perturbation bornée, $\dot{V} < 0$ hors d'un compact → **stabilité asymptotique garantie**.
+où $w(t) = f'(t) + z(t)$ est l'entrée perturbatrice totale. Puisque $w(t)$ est borné ($|w| \leq 1 + Z_{\max}$), $\dot{V} \leq 0$ hors d'un compact contenant $e=0$. Donc $e$, $\tilde{K}_p$, $\tilde{K}_i$ sont uniformément bornés (UB).
+
+De plus, $\dot{V} \leq -K_p^* e^2 + |e|(1+Z_{\max})$ implique $e \in L^2 \cap L^\infty$ et $\dot{e} \in L^\infty$. Par le **lemme de Barbalat**, $\lim_{t\to\infty} e(t) = 0$. Les gains convergent vers leurs valeurs cibles $K_p^*$, $K_i^*$ qui dépendent de l'amplitude de $w(t)$.
+
+> **Note :** Contrairement à la preuve antérieure, Barbalat établit la convergence **asymptotique** ($e \to 0$) et non pas seulement une borne. La contrepartie est que cette preuve suppose $w(t)$ suffisamment régulier ($\dot{w} \in L^\infty$), ce qui est vérifié si $z(t)$ est $C^1$.
 
 ### 10.3 Contraintes de saturation (impératives)
 
@@ -414,15 +445,26 @@ En pratique : $K_{p,min} > 0$ (jamais nul pour éviter la perte de réactivité)
 La version 1.3 fusionne l'auto-adaptation des gains (v1.2) avec l'auto-ajustement des matrices de bruit du Filtre de Kalman. Le système recalibre sa perception ($Q, R$) et sa réaction ($K_p, K_i$) en temps réel.
 
 ### 11.1 Auto-Ajustement de la Perception (Adaptive Kalman)
-On utilise la séquence d'innovation $\nu_k = y_{mesuré, k} - H\hat{x}_{k|k-1}$ pour ajuster les matrices de covariance.
+On utilise la séquence d'innovation $\nu_k = r_k - H\hat{x}_{k|k-1}$ (où $r_k$ est le log-rendement mesuré) pour ajuster les matrices de covariance. L'ordre ci-dessous est **impératif** (cf. `reta/kalman.py`, méthode `KalmanAdaptive.update`) :
 
-1. **Adaptation de R (Bruit de Mesure) :**
-$$\hat{R}_k = \alpha \hat{R}_{k-1} + (1-\alpha)(\nu_k \nu_k^T + H P_{k|k-1} H^T)$$
-*Si le bruit de marché ou de capteur augmente, $R$ grimpe, rendant le filtre plus "prudent".*
+1. **Prédire** l'état et la covariance : $x_{pred} = A \cdot x_{k-1}$, $P_{pred} = A \cdot P_{k-1} \cdot A^T + Q_{k-1}$
 
-2. **Adaptation de Q (Bruit de Processus) :**
-$$\hat{Q}_k = \beta \hat{Q}_{k-1} + (1-\beta)(G_k \nu_k \nu_k^T G_k^T)$$
-*Où $G_k$ est le gain de Kalman. Si le modèle RETA dévie systématiquement, $Q$ augmente pour redonner de la flexibilité au modèle.*
+2. **Adapter R** (bruit de mesure) avant le gain :
+$$\hat{R}_k = \alpha \cdot \hat{R}_{k-1} + (1-\alpha) \cdot (\nu_k^2 + H P_{pred} H^T)$$
+*Si l'innovation est grande, $R$ augmente → le filtre fait plus confiance au modèle qu'à la mesure.*
+
+3. **Calculer le gain** avec le $R$ adapté :
+$$S_k = H P_{pred} H^T + \hat{R}_k, \qquad K_k = P_{pred} H^T / S_k$$
+
+4. **Corriger** l'état : $x_k = x_{pred} + K_k \cdot \nu_k$, $P_k = (I - K_k H) P_{pred}$
+
+5. **Adapter Q** (bruit de processus) après correction, en utilisant le $K_k$ déjà calculé (pas d'équation implicite) :
+$$\hat{Q}_k = \beta \cdot \hat{Q}_{k-1} + (1-\beta) \cdot \text{tr}\bigl(K_k \cdot \nu_k^2 \cdot K_k^T\bigr)$$
+*Note : on prend la trace du produit scalaire $\|K_k\|^2 \cdot \nu_k^2$, pas le produit matriciel complet — cela évite la croissance non-bornée de $Q$.*
+
+6. **Mettre à jour** $Q_k = \text{diag}([\hat{Q}_k,\ \hat{Q}_k \cdot 0.1])$ pour propager la covariance du modèle.
+
+> **Propriété :** Cette séquence est explicite (pas d'équation implicite $Q = f(K(Q))$). Chaque pas est $O(n^2)$ avec $n=2$, donc négligeable en pratique.
 
 ### 11.2 Synergie Totale : Perception-Action-Adaptation
 Le cycle v1.3 est le suivant :

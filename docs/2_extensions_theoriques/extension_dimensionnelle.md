@@ -7,11 +7,22 @@
 
 La théorie RETA (décrite dans `../1_fondamentaux/theorie_fondamentale.md`) établit qu'un système borné en 1D échappe à ses limites sous perturbation persistante. Ce document généralise ce mécanisme à n dimensions et introduit la **procédure inverse par substitution**.
 
-> **Axiome dimensionnel RETA :**
-> Un système borné en ℝⁿ soumis à k perturbations persistantes indépendantes
-> exhibe un comportement effectif en ℝⁿ⁺ᵏ.
-> La procédure inverse est possible et physiquement rigoureuse si les perturbations
-> sont observables (mesurables ou estimables par filtre de Kalman).
+**Définition 1 (Expansion dimensionnelle) :**
+Soit $y_1 \in C(\mathbb{R}^+)$ un signal unidimensionnel — par exemple $y_1(t) = \arctan(t)$. On appelle **expansion dimensionnelle par la perturbation** $z_i$ l'opération :
+
+$$T_{z_i} : y_i \mapsto y_{i+1}, \quad y_{i+1}(t) = y_i(t) + \int_0^t z_i(\tau)\,d\tau$$
+
+L'opérateur $T_{z_i}$ est une translation non-linéaire dans l'espace des fonctions intégrables. La famille $\{T_{z_i}\}_{i=1}^k$ est commutative : $T_{z_i} \circ T_{z_j} = T_{z_j} \circ T_{z_i}$ pour $i \neq j$.
+
+**Définition 2 (Contraction par substitution) :**
+Soit $\hat{z}_i$ une estimation de $z_i$ (par mesure directe ou filtre de Kalman). On appelle **contraction dimensionnelle** l'opération inverse :
+
+$$T_{\hat{z}_i}^{-1} : y_{i+1} \mapsto \hat{y}_i, \quad \hat{y}_i(t) = y_{i+1}(t) - \int_0^t \hat{z}_i(\tau)\,d\tau$$
+
+La contraction est exacte ($\hat{y}_i = y_i$) si $\hat{z}_i = z_i$ p.p. L'erreur de reconstruction est bornée par $\|z_i - \hat{z}_i\|_{L^1}$, elle-même majorée par la variance du filtre de Kalman.
+
+**Lemme 1 (Espace effectif) :**
+Un système en ℝⁿ soumis à $k$ perturbations persistantes $z_i(t) \geq \varepsilon_i > 0$ indépendantes évolue dans un espace de dimension $n + k$ au sens où $y_{n+k}(t) = y_n(t) + \sum_{i=1}^k \int_0^t z_i(\tau)\,d\tau$ n'est pas borné dans ℝⁿ (aucune fonction de Lyapunov ne peut le confiner dans une boule de ℝⁿ pour $t \to \infty$).
 
 ---
 
@@ -205,19 +216,18 @@ Un signal en ℝⁿ mesuré peut être représenté par :
 
 Reconstruction exacte si Kalman est convergé. **Compression causale avec garantie d'erreur**.
 
-### 7.3 Physique — Groupe de Renormalisation
+### 7.3 Physique — Analogie avec le Groupe de Renormalisation
 
-Le groupe de renormalisation en physique quantique fait exactement la même opération :
-intégrer (soustraire) les degrés de liberté haute énergie pour obtenir une **théorie effective en dimension inférieure**.
+Le groupe de renormalisation en physique quantique intègre les degrés de liberté haute énergie pour obtenir une **théorie effective en dimension inférieure**. RETA présente une analogie structurelle (intégration/soustraction d'une dimension), mais **ce n'est pas une équivalence formelle** — le groupe de renormalisation opère sur des champs quantiques via des intégrales de chemin, tandis que RETA opère sur des signaux déterministes via des intégrales de Riemann.
 
-RETA en est la formulation discrète et déterministe :
-
-| Groupe de renormalisation | RETA |
+| Groupe de renormalisation (analogie) | RETA |
 |---|---|
 | Intégrer les modes haute énergie | Soustraire ∫ẑₙ dt |
 | Théorie effective à basse énergie | Système en ℝⁿ⁻¹ |
 | Point fixe du groupe | Système borné arctan(t) |
 | Couplages résiduels | Variance Kalman P₀₀ |
+
+> **Note :** Il s'agit d'une analogie conceptuelle, pas d'une dérivation mathématique. Les deux formalismes partagent l'idée de réduction dimensionnelle par intégration, mais les mécanismes sous-jacents sont distincts.
 
 ### 7.4 Intelligence Artificielle — Réduction d'embedding
 
@@ -231,18 +241,18 @@ Différence avec l'ACP classique :
 
 ## 8. Théorème de Réversibilité RETA
 
-> **Théorème (informel) :**
-> Soit un système $y_n(t) \in \mathbb{R}^n$ obtenu depuis $f(t) = \arctan(t)$
-> par n perturbations persistantes successives $z_1, \ldots, z_n$ avec $z_i(t) \geq \varepsilon_i > 0$.
->
-> Alors il existe une procédure de contraction ramenant $y_n$ en $\mathbb{R}^{n-k}$ pour tout $k \leq n$,
-> sous les conditions :
-> 1. Les perturbations $z_{n-k+1}, \ldots, z_n$ sont observables (Kalman ou mesure directe)
-> 2. Les forces de correction $u_i(t) \geq \varepsilon_i$ (persistance du correcteur PI)
-> 3. $t_{\text{collapse},i} < +\infty$ pour chaque dimension annulée (convergence en temps fini)
->
-> L'erreur résiduelle de reconstruction est bornée par $\sum_{i} P_{00,i}$
-> (somme des variances Kalman par dimension).
+**Théorème 1 (Réversibilité) :**
+Soit $y_n(t) = f(t) + \sum_{i=1}^n \int_0^t z_i(\tau)\,d\tau$ où $f \in C^1$ vérifie $\lim_{t\to\infty} f(t) < \infty$ et $z_i(t) \geq \varepsilon_i > 0$ pour $i = 1,\ldots,n$. Alors pour tout $k \leq n$, il existe une procédure de contraction $C_k$ telle que :
+
+$$C_k(y_n) = y_n - \sum_{i=n-k+1}^n \int_0^t \hat{z}_i(\tau)\,d\tau = y_{n-k} + \sum_{i=n-k+1}^n \int_0^t (z_i - \hat{z}_i)(\tau)\,d\tau$$
+
+avec les propriétés suivantes :
+
+1. **Convergence :** Si $\hat{z}_i$ est fourni par un filtre de Kalman convergé ($P_{00,i} \to 0$ quand $t \to \infty$), alors $\|C_k(y_n) - y_{n-k}\|_\infty \to 0$.
+2. **Borne d'erreur :** Pour un horizon fini $T$, l'erreur de reconstruction vérifie :
+   $$\bigl\|C_k(y_n) - y_{n-k}\bigr\|_{L^\infty[0,T]} \leq \sum_{i=n-k+1}^n \sqrt{T \cdot P_{00,i}}$$
+3. **Complexité :** Chaque contraction coûte une soustraction et une intégration ($O(1)$ par pas de temps). La famille $\{C_k\}_{k=1}^n$ est commutative.
+4. **Condition suffisante de contraction exacte :** Si $P_{00,i} = 0$ pour tout $i > n-k$, alors $C_k(y_n) = y_{n-k}$ presque partout.
 
 ---
 

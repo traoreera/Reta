@@ -8,4 +8,12 @@ wheels/
 
 # Virtual environments
 .venv
-reta
+
+# Simulation artifacts (not source)
+reta_store.json
+simulations/reta_store.json
+*.png
+results/
+
+# API keys & local config
+.env

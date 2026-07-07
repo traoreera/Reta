@@ -95,7 +95,11 @@ Pas de nouvelle preuve Lyapunov (contrôle identique à v1.3). Ajout de la garan
 
 $$t_{rup}^{v1.4} = t_0 + \frac{-z_0 + \sqrt{z_0^2 + 2\dot{z}_0(Y_{max}-y_0)}}{\dot{z}_0}$$
 
-**Garantie :** si $\hat{\dot{b}}_{true} \geq \dot{b}_{true}^{réel}$ (second Kalman sur-estime la dérive) → $t_{rup}^{v1.4} \leq t_{rup}^{réel}$ (toujours conservatif).
+**Garantie (avec condition) :** La borne est conservative si $\ddot{z}(t) \leq 0$ pour tout $t \geq t_0$ (dérive concave ou linéaire). Sous cette condition, si $\hat{\dot{b}}_{true} \geq \dot{b}_{true}^{réel}$ (second Kalman sur-estime la dérive), alors $t_{rup}^{v1.4} \leq t_{rup}^{réel}$.
+
+**Justification :** L'équation $z_0 T + \frac{1}{2}\dot{z}_0 T^2 = \Delta Y_{\max}$ suppose $\dot{z}$ constant. Si $\ddot{z} > 0$ (dérive convexe), $\int_0^T z(t)\,dt > z_0 T + \frac{1}{2}\dot{z}_0 T^2$, donc la rupture réelle survient plus tôt → borne optimiste.
+
+**En pratique :** Pour les systèmes dissipatifs (thermique, fatigue mécanique, dégradation batterie), $\ddot{z} \leq 0$ est physiquement vérifié. Pour les systèmes à dérive instable ($\ddot{z} > 0$ possible), activer une alarme quand $\hat{\dot{z}}_{k+1} > \hat{\dot{z}}_k$ sur une fenêtre de confirmation.
 
 ---
 
