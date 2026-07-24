@@ -69,11 +69,16 @@ Injectez la boucle de rétroaction sur l'état estimé.
 | **Analyse** | Étude des perturbations | $t_{rupture}$ |
 | **Contrôle** | Réglage des gains $K_p, K_i$ | $t_{stable}$ |
 | **Opération** | Bouclage en temps réel | Stabilité Totale |
-
 ---
 *RETA : Prédire l'inévitable pour mieux l'annuler.*
 
 ---
-## 🧭 Navigation
-- [📖 Index de la Documentation](../INDEX.md)
-- [🏠 Accueil du Projet](../../README.md)
+
+**📂 Section 3 — Technique & Implémentation**
+[Méthodologie](methodologie.md) · [Paramétrage Kalman](parametrage_kalman.md) · [Fusion de Référentiels](fusion_referentiels.md) · [Efficience Mémoire](efficience_memoire.md) · [Manuel de Survie](manuel_de_survie.md)
+
+**🔗 Voir aussi** : [Théorie Fondamentale](../1_fondamentaux/theorie_fondamentale.md) · [Extension Dimensionnelle](../2_extensions_theoriques/extension_dimensionnelle.md) · [Versions RETA](../VERSIONS.md)
+
+---
+
+[📖 Index de la Documentation](../INDEX.md) · [🏠 Accueil du Projet](../../README.md)

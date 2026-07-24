@@ -498,10 +498,15 @@ Y_max, Yc, e_ref, α, β (et une période de warm-up).
 | Numérotation | Section 7 manquante dans v1.x | Numérotation continue 1→9 |
 
 ---
-
 *Analyse basée sur theorie_fondamentale.md v2.0*
 
 ---
-## 🧭 Navigation
-- [📖 Index de la Documentation](../INDEX.md)
-- [🏠 Accueil du Projet](../../README.md)
+
+**📂 Section 1 — Fondamentaux**
+[Théorie Fondamentale](theorie_fondamentale.md) · [Analyse Complète](analyse_complete.md) · [Réponses aux Critiques](reponses_critiques.md) · [Démonstration v1.3](reta_v13_demonstration.md)
+
+**🔗 Voir aussi** : [Extension Dimensionnelle](../2_extensions_theoriques/extension_dimensionnelle.md) · [Logique Probabiliste](../2_extensions_theoriques/logique_probabiliste.md)
+
+---
+
+[📖 Index de la Documentation](../INDEX.md) · [🏠 Accueil du Projet](../../README.md)

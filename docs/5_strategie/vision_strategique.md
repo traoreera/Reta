@@ -46,8 +46,13 @@ Si tu décides de poursuivre sur cette voie, RETA t'apporte trois avantages par 
 | **Optimiser un système de survie/vol** | ✅ **Très pertinent** | Permet de gratter de la performance sur les perturbations. |
 | **Prédire des pannes/ruptures** | ✅ **Indispensable** | C'est le cœur de la théorie : calculer l'inévitable. |
 | **Faire du contrôle basique** | ❌ Peu pertinent | Un simple PID standard suffit. |
+---
+
+**📂 Section 5 — Vision Stratégique**
+[Vision Stratégique](vision_strategique.md) · [Survie et Avenir](survie_et_avenir.md)
+
+**🔗 Voir aussi** : [Théorie Fondamentale](../1_fondamentaux/theorie_fondamentale.md) · [Manuel de Survie](../3_technique/manuel_de_survie.md) · [Versions RETA](../VERSIONS.md)
 
 ---
-## 🧭 Navigation
-- [📖 Index de la Documentation](../INDEX.md)
-- [🏠 Accueil du Projet](../../README.md)
+
+[📖 Index de la Documentation](../INDEX.md) · [🏠 Accueil du Projet](../../README.md)

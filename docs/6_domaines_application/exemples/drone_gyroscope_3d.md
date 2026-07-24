@@ -450,4 +450,13 @@ Où $\nu_k = z_k - H\hat{x}_k^-$ est l'innovation. La version v1.3 auto-calibre 
 
 ---
 
-*[📖 Index exemples](../README.md) · [📖 Systèmes physiques](../physique.md) · [📖 Index global](../../INDEX.md)*
+---
+
+**📂 Exemple — Drone Gyroscope 3D**
+[← Index domaines](../README.md) · [↑ Systèmes physiques](../physique.md)
+
+**🔗 Voir aussi** : [Démonstration v1.3](../../1_fondamentaux/reta_v13_demonstration.md) · [Extension Dimensionnelle](../../2_extensions_theoriques/extension_dimensionnelle.md) · [Paramétrage Kalman](../../3_technique/parametrage_kalman.md)
+
+---
+
+[📖 Index de la Documentation](../../INDEX.md) · [🏠 Accueil du Projet](../../../README.md)

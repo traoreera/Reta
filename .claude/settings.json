@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C /home/eliezer/devs/mylib show HEAD:reta/core.py)",
+      "Bash(/bin/ls -la /home/eliezer/devs/mylib/reta/)",
+      "Bash(/bin/ls -la /home/eliezer/devs/mylib/)",
+      "Bash(/bin/ls -la /home/eliezer/devs/mylib/tests/)",
+      "Bash(git -C /home/eliezer/devs/mylib ls-tree -r HEAD --name-only)",
+      "Bash(git -C /home/eliezer/devs/mylib show HEAD:pyproject.toml)",
+      "Bash(git -C /home/eliezer/devs/mylib show HEAD:tests/test_reta.py)",
+      "Bash(uv run *)"
+    ]
+  }
+}

@@ -1,5 +1,34 @@
-# RETA — Mémoire LLM par Navigation Dimensionnelle
+# RETA — Mémoire LLM par Navigation Dimensionnelle (v2.0 — usage requalifié)
 *Compression de contexte et changement de référentiel sans surcoût en tokens*
+
+> ## ⚠️ Avertissement de portée (v2.0 — Critique 11, `reponses_critiques.md`)
+>
+> **Ce document contenait une erreur de fond, corrigée ici.** Les versions antérieures
+> affirmaient qu'un LLM avec "mémoire RETA" pouvait reconstruire l'intégralité du
+> contenu d'une conversation passée **sans relire un seul token**, avec une erreur
+> bornée par une variance Kalman constante $P_\infty$.
+>
+> **C'est faux pour du texte libre.** Le filtre de Kalman utilisé a un état à 2 degrés
+> de liberté $[z,\dot z]$ ; il ne peut reconstruire que ce qui est observable dans un
+> système linéaire à 2 dimensions. Un tour de conversation porte potentiellement des
+> milliers de bits d'information non redondante (faits, noms, contraintes numériques).
+> Une signature de 15 tokens ne peut pas les contenir — ce serait une violation de
+> borne de Shannon, pas une compression sans perte. Le facteur de gain annoncé
+> (2020×, voir `../3_technique/efficience_memoire.md`) est arithmétiquement correct
+> **étant donné les hypothèses**, mais les hypothèses supposent implicitement que le
+> contenu réel est bas-dimensionnel — ce qui n'est pas démontré et n'est vrai pour
+> aucune conversation en langage libre.
+>
+> **Ce qui reste valide, reformulé ci-dessous (§9) :** utiliser RETA pour **détecter
+> une dérive thématique** (une métrique scalaire ou bas-dimensionnelle explicite,
+> comme dans `../6_domaines_application/ia_llm.md` §1) est une application légitime.
+> Utiliser RETA pour **reconstruire le contenu exact** d'un tour passé sans le stocker
+> ne l'est pas. Le reste de ce document (§1-8) est conservé tel quel **à titre
+> d'archive de l'erreur d'origine** — chaque affirmation de reconstruction fidèle
+> doit être lue avec cette réserve.
+>
+> Voir `../2_extensions_theoriques/reta_nd_dispersion.md` §5 pour la dérivation
+> complète, et §9 ci-dessous pour la reformulation honnête de cette application.
 
 ---
 
@@ -232,13 +261,54 @@ Ce document s'appuie sur :
 La mémoire LLM est une **instance applicative** de la contraction dimensionnelle :
 chaque tour de conversation est une perturbation persistante,
 chaque rappel mémoire est une descente par substitution Kalman.
-
 ---
 
 *Cette architecture n'existe pas encore comme implémentation explicite.*
 *RETA fournit le cadre théorique — la fenêtre de contexte infinie à coût constant par tour.*
 
 ---
-## 🧭 Navigation
-- [📖 Index de la Documentation](../INDEX.md)
-- [🏠 Accueil du Projet](../../README.md)
+
+## 9. Reformulation Honnête (v2.0) — Ce que RETA-LLM peut réellement faire
+
+Les sections 1-8 ci-dessus décrivent une **architecture de compression avec
+reconstruction fidèle**, qui ne tient pas (Critique 11). Voici la version qui tient :
+
+### 9.1 Usage valide : détection de dérive, pas reconstruction
+
+RETA reste utile pour suivre une **métrique scalaire ou bas-dimensionnelle explicite**
+de la conversation — pas pour encoder son contenu intégral :
+
+$$y(t) = \text{distance sémantique au sujet initial (ex. : 1 − similarité cosine)}$$
+
+$$z(t) = \text{taux de dérive par tour}, \qquad t_{\text{rupture}} = \text{tour où } y(t) > Y_{max}$$
+
+C'est exactement l'usage documenté dans `../6_domaines_application/ia_llm.md` §1, à
+condition d'en retirer l'affirmation de reconstruction exacte (voir la correction
+apportée à ce fichier).
+
+### 9.2 Ce qui reste stocké : rien de plus qu'un signal de surveillance
+
+| Ce que RETA-LLM peut fournir | Ce qu'il ne peut pas fournir |
+|---|---|
+| Une alerte de dérive thématique avant qu'elle devienne incohérente | Le contenu exact d'un tour passé non stocké par ailleurs |
+| Un score de dérive comportementale (alignement, cf. §4 de `ia_llm.md`) | Une compression sans perte du texte de la conversation |
+| Une mesure de dimension effective $n_{\text{eff}}$ de l'espace d'embedding (cf. `reta_nd_dispersion.md` §5.2) pour calibrer les seuils d'alerte | Une "fenêtre de contexte infinie à coût constant" |
+
+### 9.3 Piste de validation
+
+Avant toute réutilisation de ce document pour une implémentation réelle : mesurer
+$n_{\text{eff}}$ sur des embeddings réels de conversation, et vérifier si le taux de
+dérive observé est cohérent avec $n_{\text{eff}} \cdot D \cdot t$ (loi de dispersion,
+`reta_nd_dispersion.md` §1). Voir `../6_domaines_application/ia_llm_drift_monitoring.md`
+pour la version applicative complète de cette reformulation.
+
+---
+
+**📂 Section 4 — Applications**
+[Index](index.md) · [Mémoire LLM](memoire_llm.md)
+
+**🔗 Voir aussi** : [Efficience Mémoire](../3_technique/efficience_memoire.md) · [Extension Dimensionnelle](../2_extensions_theoriques/extension_dimensionnelle.md) · [Réponses aux Critiques](../1_fondamentaux/reponses_critiques.md)
+
+---
+
+[📖 Index de la Documentation](../INDEX.md) · [🏠 Accueil du Projet](../../README.md)

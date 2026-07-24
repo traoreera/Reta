@@ -498,6 +498,11 @@ Un système v1.3 peut être déployé sans paramétrage préalable. Il "apprend"
 
 ---
 
-## 🧭 Navigation
-- [📖 Index de la Documentation](../INDEX.md)
-- [🏠 Accueil du Projet](../../README.md)
+**📂 Section 1 — Fondamentaux**
+[Théorie Fondamentale](theorie_fondamentale.md) · [Analyse Complète](analyse_complete.md) · [Réponses aux Critiques](reponses_critiques.md) · [Démonstration v1.3](reta_v13_demonstration.md)
+
+**🔗 Voir aussi** : [Extension Dimensionnelle](../2_extensions_theoriques/extension_dimensionnelle.md) · [Logique Probabiliste](../2_extensions_theoriques/logique_probabiliste.md) · [Fusion de Référentiels](../3_technique/fusion_referentiels.md)
+
+---
+
+[📖 Index de la Documentation](../INDEX.md) · [🏠 Accueil du Projet](../../README.md)

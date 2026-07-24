@@ -313,4 +313,11 @@ $$\boxed{T_{v1.4} = \frac{-z_0 + \sqrt{z_0^2 + 2\dot{z}_0(Y_{max}-y_0)}}{\dot{z}
 
 ---
 
-*[📖 Théorie fondamentale](theorie_fondamentale.md) · [📖 Index](../INDEX.md) · [📖 Versions](../VERSIONS.md)*
+**📂 Section 1 — Fondamentaux**
+[Théorie Fondamentale](theorie_fondamentale.md) · [Analyse Complète](analyse_complete.md) · [Réponses aux Critiques](reponses_critiques.md) · [Démonstration v1.3](reta_v13_demonstration.md)
+
+**🔗 Voir aussi** : [Versions RETA](../VERSIONS.md) · [Extension Dimensionnelle](../2_extensions_theoriques/extension_dimensionnelle.md)
+
+---
+
+[📖 Index de la Documentation](../INDEX.md) · [🏠 Accueil du Projet](../../README.md)

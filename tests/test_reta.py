@@ -1,14 +1,23 @@
-"""Tests unitaires pour les modules RETA."""
+"""Tests unitaires — cœur RETA classique (v1.4) et RETA-nD."""
+
+import math
 
 import numpy as np
+import pytest
+
 from reta.kalman import Kalman1D, KalmanAdaptive
-from reta.core import RETAReferential
-from reta.detector import PhaseDetector
 from reta.pi import PIRegulator
-from reta.fusion import fusion, navigate, ligne_possibilites
+from reta.core import RETAReferential
+from reta.dispersion import (
+    effective_dimension,
+    cir_params,
+    transition_cdf,
+    first_passage_time,
+)
+from reta.nd import RETAND
 
 
-# ── Kalman ──────────────────────────────────────────────────────────────
+# ── Kalman ────────────────────────────────────────────────────────────────
 
 class TestKalman1D:
     def test_batch_shape(self):
@@ -18,14 +27,13 @@ class TestKalman1D:
         assert len(z) == n
         assert len(p) == n
 
-    def test_reset_reuse(self):
-        k = Kalman1D()
-        z1, _ = k.batch(np.random.randn(50))
-        z2, _ = k.batch(np.random.randn(50))
-        assert len(z1) == 50
-        assert len(z2) == 50
+    def test_converges_to_constant_signal(self):
+        k = Kalman1D(Q=1e-3, R=1e-3)
+        signal = np.ones(500) * 0.02
+        z, _ = k.batch(signal)
+        assert abs(z[-1] - 0.02) < 1e-2
 
-    def test_rolling_mean_o1(self):
+    def test_rolling_mean(self):
         x = np.arange(10, dtype=float)
         m = Kalman1D.rolling_mean(x, window=3)
         assert len(m) == 10
@@ -34,156 +42,183 @@ class TestKalman1D:
 
 
 class TestKalmanAdaptive:
-    def test_adaptation(self):
-        k = KalmanAdaptive(alpha=0.97, beta=0.95)
-        k.batch(np.random.randn(100))
+    def test_adaptation_positive(self):
+        k = KalmanAdaptive()
+        k.batch(np.random.randn(100) * 0.01)
         assert k.R_current > 0
         assert k.Q_current > 0
         assert 0 <= k.signal_quality <= 1
 
-    def test_convergent_signal(self):
-        k = KalmanAdaptive()
-        signal = np.ones(200) * 0.01 + np.random.randn(200) * 0.001
-        z, _ = k.batch(signal)
-        assert abs(k.z - 0.01) < 0.02
-
-    def test_properties(self):
-        k = KalmanAdaptive()
-        k.batch(np.random.randn(50))
-        assert isinstance(k.z, float)
-        assert isinstance(k.dz, float)
-
-
-# ── Core ────────────────────────────────────────────────────────────────
-
-class TestRETAReferential:
-    def test_fit_price(self):
+    def test_converges_to_ramp(self):
         np.random.seed(0)
-        price = 100 + np.cumsum(np.random.randn(200) * 0.5)
-        ref = RETAReferential().fit(price)
-        assert ref.n == 200
-        assert ref.phase in ("BULL", "BEAR", "NEUTRE")
-        assert ref.t_rup > 0
-
-    def test_fit_logret(self):
-        logret = np.random.randn(100) * 0.01
-        ref = RETAReferential().fit(logret, is_price=False)
-        assert ref.n == 100
-
-    def test_encode_decode(self):
-        np.random.seed(1)
-        price = 100 + np.cumsum(np.random.randn(150))
-        ref = RETAReferential().fit(price)
-        payload = ref.encode()
-        restored = RETAReferential.from_encoded(payload)
-        assert abs(restored.z_last - ref.z_last) < 1e-8
-        assert restored.phase == ref.phase
-        assert abs(restored.t_rup - ref.t_rup) < 0.01  # arrondi à 2 décimales
-
-    def test_predict(self):
-        ref = RETAReferential().fit(100 + np.cumsum(np.random.randn(100)))
-        fut = ref.predict(steps=24)
-        assert len(fut) == 24
-        assert np.all(fut > 0)
-
-    def test_add_operator(self):
-        ref_a = RETAReferential().fit(100 + np.cumsum(np.random.randn(100)))
-        ref_b = RETAReferential().fit(np.ones(100))
-        fused = ref_a + ref_b
-        assert isinstance(fused, RETAReferential)
-
-    def test_version_selection(self):
-        ref_v1 = RETAReferential(version="v1.1").fit(np.ones(100))
-        ref_v3 = RETAReferential(version="v1.3").fit(np.ones(100))
-        assert ref_v1.n == 100
-        assert ref_v3.n == 100
+        n = 300
+        true_z = 0.01 + 0.0002 * np.arange(n)
+        obs = true_z + np.random.randn(n) * 0.002
+        k = KalmanAdaptive()
+        z, _ = k.batch(obs)
+        assert abs(z[-1] - true_z[-1]) < 0.02
+        assert k.dz > 0  # doit détecter la pente positive
 
 
-# ── Detector ────────────────────────────────────────────────────────────
-
-class TestPhaseDetector:
-    def test_bull_detection(self):
-        d = PhaseDetector(eps=0.001, t_confirm=3)
-        phases = d.batch(np.ones(20) * 0.005)
-        assert phases[-1] == "BULL"
-
-    def test_bear_detection(self):
-        d = PhaseDetector(eps=0.001, t_confirm=3)
-        phases = d.batch(np.ones(20) * -0.005)
-        assert phases[-1] == "BEAR"
-
-    def test_neutral_noise(self):
-        d = PhaseDetector(eps=0.01, t_confirm=3)
-        phases = d.batch(np.random.randn(50) * 0.001)
-        assert phases[-1] == "NEUTRE"
-
-    def test_no_false_positive(self):
-        d = PhaseDetector(eps=0.01, t_confirm=5)
-        phases = d.batch([0.02] * 3 + [-0.02] * 10)
-        assert phases[-1] == "BEAR"  # BULL non confirmé → NEUTRE, puis BEAR confirmé
-
-
-# ── PI ──────────────────────────────────────────────────────────────────
+# ── PI ────────────────────────────────────────────────────────────────────
 
 class TestPIRegulator:
-    def test_fixed_gains(self):
-        pi = PIRegulator(kp=0.1, ki=0.01)
-        u = pi.batch(np.ones(50) * 0.5)
-        assert len(u) == 50
-        assert abs(u[-1]) > 0
+    def test_zero_error_no_command(self):
+        pi = PIRegulator(adaptive=False)
+        assert pi.step(0.0) == 0.0
 
-    def test_adaptive_gradient(self):
-        pi = PIRegulator(adaptive=True, gamma_p=0.5, gamma_i=0.2)
-        pi.batch(np.ones(100) * 0.5)
-        assert pi.kp > 0.12  # doit avoir augmenté
-        assert pi.ki > 0.002
+    def test_gains_stay_bounded(self):
+        pi = PIRegulator(Kp_max=5.0, Ki_max=5.0, gamma_p=10.0, gamma_i=10.0)
+        for _ in range(1000):
+            pi.step(1.0)
+        assert pi.Kp <= 5.0
+        assert pi.Ki <= 5.0
 
-    def test_reset(self):
-        pi = PIRegulator()
-        pi.batch(np.ones(50))
-        assert pi._integral != 0
-        pi.reset()
-        assert pi._integral == 0.0
-
-    def test_properties(self):
-        pi = PIRegulator(kp=0.5, ki=0.01)
-        assert pi.t_stable > 0
-        assert pi.residual_band > 0
-        assert any(r in pi.regime for r in ("sous-amorti", "critique", "sur-amorti"))
+    def test_regulation_reduces_error_over_time(self):
+        pi = PIRegulator(Kp=3.0, Ki=1.0, e_ref=1.0)
+        y = 5.0
+        errors = []
+        for _ in range(200):
+            e = y
+            u = pi.step(e, dt=0.05)
+            y += (0.5 - u) * 0.05  # perturbation constante 0.5, contrée par u
+            errors.append(abs(e))
+        assert errors[-1] < errors[0]
 
 
-# ── Fusion ──────────────────────────────────────────────────────────────
+# ── Core (RETA classique v1.4) ──────────────────────────────────────────
 
-class TestFusion:
-    def test_fusion_identity(self):
-        ref = RETAReferential().fit(np.ones(200) * 0.01)
-        fused = fusion(ref, ref, alpha=0.5)
-        assert fused.z_last == ref.z_last
+class TestRETAReferential:
+    def test_fit_returns_history(self):
+        np.random.seed(1)
+        obs = np.ones(150) * 0.05 + np.random.randn(150) * 0.01
+        ref = RETAReferential(Y_max=10.0, dt=1.0)
+        history = ref.fit(obs)
+        assert len(history) == 150
+        assert ref.t == 150.0
 
-    def test_fusion_bounds(self):
-        ref_a = RETAReferential().fit(np.ones(100) * 0.01)
-        ref_b = RETAReferential().fit(np.ones(100) * 0.02)
-        fused = fusion(ref_a, ref_b, alpha=1)
-        assert abs(fused.z_last - ref_a.z_last) < 1e-10
-        fused0 = fusion(ref_a, ref_b, alpha=0)
-        assert abs(fused0.z_last - ref_b.z_last) < 1e-10
+    def test_t_rupture_positive_for_positive_drift(self):
+        np.random.seed(2)
+        # Drift modeste, peu de pas : la marge jusqu'à Y_max reste positive
+        # à la fin de la fenêtre observée (rupture prédite, mais future).
+        obs = np.ones(60) * 0.05 + np.random.randn(60) * 0.005
+        ref = RETAReferential(Y_max=10.0, adaptive_pi=False, Kp0=0.0, Ki0=0.0)
+        ref.fit(obs)
+        assert ref.history[-1].y_open < ref.Y_max
+        t_rup = ref.t_rupture()
+        assert t_rup > ref.t  # rupture dans le futur
 
-    def test_fusion_invalid_alpha(self):
-        ref = RETAReferential().fit(np.ones(100))
-        try:
-            fusion(ref, ref, alpha=1.5)
-            assert False
-        except ValueError:
-            pass
+    def test_t_rupture_falls_back_to_linear_when_dz_zero(self):
+        ref = RETAReferential(Y_max=10.0, adaptive_pi=False, Kp0=0.0, Ki0=0.0)
+        obs = np.ones(100) * 0.1
+        ref.fit(obs)
+        t_rup = ref.t_rupture()
+        assert math.isfinite(t_rup)
 
-    def test_navigate(self):
-        ref_a = RETAReferential().fit(np.zeros(50))
-        ref_b = RETAReferential().fit(np.ones(50) * 0.01)
-        diff = navigate(ref_a, ref_b)
-        assert len(diff) > 0
+    def test_t_rupture_requires_step(self):
+        ref = RETAReferential(Y_max=10.0)
+        with pytest.raises(RuntimeError):
+            ref.t_rupture()
 
-    def test_ligne_possibilites(self):
-        ref_a = RETAReferential().fit(np.ones(100) * 0.01)
-        ref_b = RETAReferential().fit(np.ones(100) * 0.02)
-        ligne = ligne_possibilites(ref_a, ref_b, n=10)
-        assert len(ligne) == 10
+    def test_command_opposes_positive_error(self):
+        """
+        u(t) = Kp·e + Ki·∫e avec Kp, Ki > 0 et e > 0 persistant → u > 0,
+        donc y_real = y_open − u est tiré vers le bas (sens de la correction,
+        cf. théorie_fondamentale.md §4.4 "contre-force dynamique").
+        Note : e(t) est défini sur la trajectoire libre y_open (pas de
+        feedback de y_real dans e), fidèle à l'équation §4.1/§4.3 — donc
+        u croît sans jamais se stabiliser ici, contrairement à un vrai
+        asservissement en boucle fermée sur la sortie régulée.
+        """
+        np.random.seed(3)
+        obs = np.ones(100) * 0.05 + np.random.randn(100) * 0.005
+        ref = RETAReferential(Y_max=1000.0, Yc=0.0, Kp0=5.0, Ki0=2.0, adaptive_pi=False)
+        history = ref.fit(obs)
+        last = history[-1]
+        assert last.e > 0
+        assert last.u > 0
+        assert last.y_real < last.y_open
+
+    def test_adaptive_gains_grow_under_persistent_error(self):
+        """Loi gradient : K̇p = γp·ē² >= 0 toujours → Kp ne peut que croître (hors saturation)."""
+        ref = RETAReferential(Y_max=1000.0, Yc=0.0, Kp0=1.0, Ki0=0.5, adaptive_pi=True)
+        Kp0 = ref.pi.Kp
+        ref.fit(np.ones(50) * 0.05)
+        assert ref.pi.Kp >= Kp0
+
+
+# ── Dispersion (RETA-nD) ─────────────────────────────────────────────────
+
+class TestDispersion:
+    def test_effective_dimension_isotropic(self):
+        cov = np.eye(5)
+        assert abs(effective_dimension(cov) - 5.0) < 1e-9
+
+    def test_effective_dimension_anisotropic_less_than_n(self):
+        cov = np.diag([10.0, 0.01, 0.01, 0.01])
+        n_eff = effective_dimension(cov)
+        assert 1.0 <= n_eff < 4.0
+
+    def test_cir_params_feller_violation_raises(self):
+        with pytest.raises(ValueError):
+            cir_params(n_eff=1.5, D=0.1, Kp=1.0)
+
+    def test_transition_cdf_is_valid_probability(self):
+        p = transition_cdf(x=4.0, t=1.0, x0=1.0, n_eff=3.0, D=0.1, Kp=0.0)
+        assert 0.0 <= p <= 1.0
+
+    def test_transition_cdf_degenerate_at_t0(self):
+        assert transition_cdf(x=5.0, t=0.0, x0=1.0, n_eff=3.0, D=0.1, Kp=0.0) == 1.0
+        assert transition_cdf(x=0.5, t=0.0, x0=1.0, n_eff=3.0, D=0.1, Kp=0.0) == 0.0
+
+    def test_first_passage_finite_for_pure_diffusion(self):
+        t_rup = first_passage_time(Y_max=5.0, r0=0.5, n_eff=3.0, D=0.5, Kp=0.0)
+        assert math.isfinite(t_rup)
+        assert t_rup > 0
+
+    def test_first_passage_zero_if_already_past_threshold(self):
+        assert first_passage_time(Y_max=1.0, r0=2.0, n_eff=3.0, D=0.5, Kp=0.0) == 0.0
+
+    def test_first_passage_slower_with_regulation(self):
+        """Kp > 0 doit repousser (ou infinir) la rupture par rapport à Kp = 0."""
+        t_free = first_passage_time(Y_max=5.0, r0=0.5, n_eff=3.0, D=0.3, Kp=0.0)
+        t_regulated = first_passage_time(Y_max=5.0, r0=0.5, n_eff=3.0, D=0.3, Kp=0.5)
+        assert t_regulated > t_free
+
+
+# ── RETA-nD end-to-end ────────────────────────────────────────────────────
+
+class TestRETAND:
+    def test_step_and_box_rupture(self):
+        np.random.seed(4)
+        n = 3
+        rnd = RETAND(n=n, Y_max_axes=[5.0, 5.0, 8.0])
+        T = 40
+        obs = np.ones((T, n)) * 0.05 + np.random.randn(T, n) * 0.005
+        history = rnd.fit(obs)
+        assert len(history) == T
+        assert math.isfinite(rnd.t_rupture_box())
+
+    def test_joint_rupture_shorter_than_box_under_isotropic_noise(self):
+        """
+        Cf. Critique 7 / reta_nd_dispersion.md : sous seuil de norme jointe et
+        bruit isotrope, le premier passage Bessel doit être <= min_i(t_rupture_i)
+        (biais optimiste du pavé confirmé géométriquement : boule ⊂ pavé).
+        """
+        np.random.seed(5)
+        n = 3
+        Y_max_axes = [5.0, 5.0, 5.0]
+        rnd = RETAND(n=n, Y_max_axes=Y_max_axes, axis_kwargs=[
+            {"adaptive_pi": False, "Kp0": 0.0, "Ki0": 0.0} for _ in range(n)
+        ])
+        T = 60
+        drift = 0.05
+        obs = np.ones((T, n)) * drift + np.random.randn(T, n) * 0.01
+        rnd.fit(obs)
+
+        t_box = rnd.t_rupture_box()
+        t_joint = rnd.t_rupture_joint(Y_max=5.0, Kp=0.0)
+
+        assert math.isfinite(t_box)
+        assert math.isfinite(t_joint)
+        assert t_joint <= t_box

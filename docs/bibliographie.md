@@ -32,3 +32,11 @@ Cette page regroupe les références théoriques qui sous-tendent les formules e
 - Zhao, C. et Guo, L., *On the Capability of PID Control for Nonlinear Uncertain Systems* (2016). Soutien théorique au contrôle PI/PID sur systèmes incertains.
 - Baltieri, M., *A Bayesian perspective on classical control* (2020). Intéressant pour les règles d’adaptation de gains.
 
+---
+
+**🔗 Voir aussi** : [Versions RETA](VERSIONS.md) · [Théorie Fondamentale](1_fondamentaux/theorie_fondamentale.md) · [Benchmarks](benchmarks.md)
+
+---
+
+[📖 Index de la Documentation](INDEX.md) · [🏠 Accueil du Projet](../README.md)
+

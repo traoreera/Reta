@@ -136,3 +136,5 @@ v1.4 corrige le **bound** mais ne prédit pas mieux la SURVIE (la rupture arrive
 ---
 
 *[← v1.3 (Kalman adaptatif Q)](../v1.3/README.md) · [← Résumé](../VERSIONS.md)*
+
+[📖 Index de la Documentation](../INDEX.md) · [🏠 Accueil du Projet](../../README.md)

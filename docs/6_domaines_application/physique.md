@@ -159,4 +159,11 @@ La capacité d'une batterie Li-ion se dégrade irréversiblement à chaque cycle
 
 ---
 
-*[📖 Index domaines](README.md) · [📖 Index global](../INDEX.md)*
+**📂 Section 6 — Domaines d'Application**
+[Index](README.md) · [Finance](finance.md) · [IA & LLM](ia_llm.md) · [Physique](physique.md) · [Cybersécurité](cybersecurite.md) · [Santé](sante.md) · [Infrastructure](infrastructure.md) · [Social](social.md)
+
+**🔗 Voir aussi** : [Extension Dimensionnelle](../2_extensions_theoriques/extension_dimensionnelle.md) · [Démonstration Drone](../1_fondamentaux/reta_v13_demonstration.md) · [Paramétrage Kalman](../3_technique/parametrage_kalman.md)
+
+---
+
+[📖 Index de la Documentation](../INDEX.md) · [🏠 Accueil du Projet](../../README.md)

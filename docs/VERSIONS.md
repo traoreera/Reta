@@ -6,18 +6,25 @@
 
 ## Tableau comparatif
 
-| Critère | v1.1 | v1.2 | v1.3 | v1.4 |
-|---|---|---|---|---|
-| **Kalman** | Q, R fixes | Q, R fixes | **Q adaptatif** (innovations GPS) | idem v1.3 |
-| **PI** | Kp, Ki fixes | **Kp, Ki adaptatifs** (gradient) | Kp, Ki adaptatifs | idem v1.3 |
-| **Preuve stabilité** | Routh-Hurwitz + Lyapunov | Lyapunov gradient | Lyapunov augmenté | idem v1.3 |
-| **Erreur statique** | Permanente si Ki=0 | Éliminée | Éliminée | Éliminée |
-| **Biais gyro estimé** | 0.6% à t=120s | 0.6% (Kalman fixe) | **91-103%** à t=120s | idem v1.3 |
-| **Survie après panne GPS** | t ≈ 56s ⚠️ | t ≈ 56s ⚠️ | t ≈ 266-276s ✓ | idem v1.3 |
-| **Bound t_rup conservatif** | Oui | Oui | **NON ⚠️** (z croît post-panne) | **OUI ✓** (ḃ_true tracké) |
-| **Erreur bound post-panne** | — | — | +518s OPTIMISTE | **−99s CONSERVATIF** |
-| **Complexité** | O(n²) | O(n²) + PI | O(n²) + Q + PI | O(n²) + Q + PI + Kalman 2D |
-| **Usage type** | Calibrage connu | Perturbation variable | Biais variable + GPS outage | Idem + prédiction t_rup fiable |
+| Critère | v1.1 | v1.2 | v1.3 | v1.4 | **v1.5** |
+|---|---|---|---|---|---|
+| **Kalman** | Q, R fixes | Q, R fixes | **Q adaptatif** (innovations GPS) | idem v1.3 | idem v1.4 |
+| **PI** | Kp, Ki fixes | **Kp, Ki adaptatifs** (gradient) | Kp, Ki adaptatifs | idem v1.3 | idem v1.4, appliqué à $r(t)$ en nD |
+| **Preuve stabilité** | Routh-Hurwitz + Lyapunov | Lyapunov gradient | Lyapunov augmenté | idem v1.3 | idem v1.4 |
+| **Erreur statique** | Permanente si Ki=0 | Éliminée | Éliminée | Éliminée | Éliminée |
+| **Biais gyro estimé** | 0.6% à t=120s | 0.6% (Kalman fixe) | **91-103%** à t=120s | idem v1.3 | idem v1.3 |
+| **Survie après panne GPS** | t ≈ 56s ⚠️ | t ≈ 56s ⚠️ | t ≈ 266-276s ✓ | idem v1.3 | idem v1.3 |
+| **Bound t_rup conservatif** | Oui | Oui | **NON ⚠️** (z croît post-panne) | **OUI ✓** (ḃ_true tracké) | idem v1.4 |
+| **Erreur bound post-panne** | — | — | +518s OPTIMISTE | **−99s CONSERVATIF** | idem v1.4 |
+| **Dimension** | 1D scalaire | 1D scalaire | 1D scalaire | 1D scalaire | **nD — bruit isotrope + force entropique** |
+| **Rupture en dimension n** | N/A | N/A | N/A | N/A | **Premier passage Bessel(n)**, si critère = norme jointe (§4 `reta_nd_dispersion.md`) |
+| **Complexité** | O(n²) | O(n²) + PI | O(n²) + Q + PI | O(n²) + Q + PI + Kalman 2D | idem v1.4 + calcul Bessel |
+| **Usage type** | Calibrage connu | Perturbation variable | Biais variable + GPS outage | Idem + prédiction t_rup fiable | Idem + confinement multi-axe à seuil sphérique |
+
+> **v1.5 ne remplace pas v1.4** — elle s'y ajoute pour les cas où le critère de rupture
+> est une norme jointe (cf. liste de validité, `2_extensions_theoriques/reta_nd_dispersion.md`
+> §4). Pour un critère à seuils indépendants par axe (ex. drone 3 axes documenté), v1.4
+> reste la version applicable telle quelle.
 
 ---
 
@@ -146,3 +153,14 @@ docs/
   - `kalman.py` : `Kalman1D` (v1.1) + `KalmanAdaptive` (v1.3)
   - `pi.py` : `PIRegulator` (fixe, gradient, heuristique)
   - `core.py` : `RETAReferential` — point d'entrée principal
+
+---
+
+**📂 Versions RETA**
+[v1.1](v1.1/README.md) · [v1.2](v1.2/README.md) · [v1.3](v1.3/README.md) · [v1.4](v1.4/README.md)
+
+**🔗 Voir aussi** : [Théorie Fondamentale](1_fondamentaux/theorie_fondamentale.md) · [Extension Dimensionnelle](2_extensions_theoriques/extension_dimensionnelle.md) · [Benchmarks](benchmarks.md)
+
+---
+
+[📖 Index de la Documentation](INDEX.md) · [🏠 Accueil du Projet](../README.md)

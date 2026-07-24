@@ -1,212 +1,143 @@
 """
-Kalman — estimateur de la perturbation persistante z(t) et de sa vitesse ż(t).
+Filtres de Kalman RETA — estimation de l'état [z, ż].
 
-État : x = [z, ż]
-  z  = perturbation courante (log-rendement lissé)
-  ż  = vitesse de dérive
+Cf. docs/1_fondamentaux/theorie_fondamentale.md §8 (modèle position-vitesse)
+et §11.1 (séquence d'adaptation Q/R par innovation).
 
-Modèle :
-  x_{k+1} = A x_k + bruit processus (Q)
-  y_k     = H x_k + bruit mesure    (R)
+Modèle d'espace d'état commun aux deux filtres :
 
-A = [[1, 1],   H = [[1, 0]]
-     [0, 1]]
+    x_{k+1} = A x_k + w_k,   A = [[1, dt], [0, 1]],   w_k ~ N(0, Q)
+    r_k     = H x_k + v_k,   H = [1, 0],              v_k ~ N(0, R)
 
-Versions (doc : theorie_fondamentale.md) :
-
-  Kalman1D        — v1.1 : Q et R fixes, Riccati standard
-  KalmanAdaptive  — v1.3 : Q et R auto-ajustés depuis les innovations νₖ
-
-    Adaptation R (bruit mesure) :
-      R̂ₖ = α·R̂ₖ₋₁ + (1−α)·(νₖ² + H·Pₖ|ₖ₋₁·Hᵀ)
-      → Si le signal est bruité, R monte → filtre plus prudent
-
-    Adaptation Q (bruit processus) :
-      Q̂ₖ = β·Q̂ₖ₋₁ + (1−β)·Gₖ·νₖ²·Gₖᵀ   où Gₖ = gain Kalman
-      → Si le modèle RETA dévie, Q monte → plus de flexibilité
-
-    Cycle v1.3 (doc §11.2) :
-      1. Ajuster R (clarté du signal)
-      2. Ajuster Q (validité du modèle)
-      3. Extraire [ẑ, ż] optimal
-      4. Calculer réponse PI adaptée
-      5. Prédire t_rupture auto-calibré
+x = [z, ż] : la perturbation et sa dérivée. On observe r_k (ex. un
+log-rendement), qui approxime z_k directement.
 """
 
 from __future__ import annotations
+
 import numpy as np
 
 
 class Kalman1D:
-    def __init__(self, Q: float = 2e-5, R: float = 5e-4):
-        self.Q = Q
-        self.R = R
-        self._A  = np.array([[1.0, 1.0], [0.0, 1.0]])
-        self._H  = np.array([[1.0, 0.0]])
-        self._Qm = np.diag([Q, Q * 0.1])
-        self._Rm = np.array([[R]])
-        self._x  = None
-        self._P  = None
+    """Kalman à gains fixes (Q, R constants) sur l'état [z, ż]."""
 
-    def reset(self, z0: float = 0.0) -> None:
-        self._x = np.array([z0, 0.0])
-        self._P = np.eye(2) * 2.0
+    def __init__(self, Q: float = 2e-5, R: float = 5e-4, dt: float = 1.0):
+        self.dt = dt
+        self.A = np.array([[1.0, dt], [0.0, 1.0]])
+        self.H = np.array([[1.0, 0.0]])
+        self.Q = np.diag([Q, Q * 0.1])
+        self.R = np.array([[R]])
+        self.x = np.zeros((2, 1))
+        self.P = np.eye(2) * 1.0
 
-    def update(self, obs: float) -> float:
-        """Met à jour avec une nouvelle observation. Retourne z_est."""
-        if self._x is None:
-            self.reset(obs)
-            return obs
+    def reset(self, x0: float = 0.0, dz0: float = 0.0) -> None:
+        self.x = np.array([[x0], [dz0]])
+        self.P = np.eye(2) * 1.0
 
-        x, P = self._x, self._P
-        x = self._A @ x
-        P = self._A @ P @ self._A.T + self._Qm
+    def update(self, r_k: float) -> tuple[float, float]:
+        """Un pas prédiction + correction. Retourne (z_hat, dz_hat)."""
+        x_pred = self.A @ self.x
+        P_pred = self.A @ self.P @ self.A.T + self.Q
 
-        S = float((self._H @ P @ self._H.T + self._Rm)[0, 0])
-        K = (P @ self._H.T).flatten() / S
-        innov = obs - float((self._H @ x)[0])
-        x = x + K * innov
-        P = (np.eye(2) - np.outer(K, self._H)) @ P
+        S = self.H @ P_pred @ self.H.T + self.R
+        K = P_pred @ self.H.T @ np.linalg.inv(S)
 
-        self._x, self._P = x, P
-        return float(x[0])
+        innovation = r_k - (self.H @ x_pred)[0, 0]
+        self.x = x_pred + K * innovation
+        self.P = (np.eye(2) - K @ self.H) @ P_pred
 
-    def batch(self, series: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-        """Traite une série complète. Retourne (z_est, p_var)."""
-        self.reset(float(series[0]))
-        z_est = np.zeros(len(series))
-        p_var = np.zeros(len(series))
-        for k, o in enumerate(series):
-            z_est[k] = self.update(float(o))
-            p_var[k] = float(self._P[0, 0])
-        return z_est, p_var
+        return float(self.x[0, 0]), float(self.x[1, 0])
+
+    def batch(self, observations: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        """Applique `update` séquentiellement. Retourne (z_hat[], P00[])."""
+        n = len(observations)
+        z_hat = np.empty(n)
+        p00 = np.empty(n)
+        for k, r_k in enumerate(observations):
+            self.update(float(r_k))
+            z_hat[k] = self.x[0, 0]
+            p00[k] = self.P[0, 0]
+        return z_hat, p00
 
     @property
     def z(self) -> float:
-        """Estimation courante de z."""
-        return float(self._x[0]) if self._x is not None else 0.0
+        return float(self.x[0, 0])
 
     @property
     def dz(self) -> float:
-        """Estimation courante de ż (vitesse de dérive)."""
-        return float(self._x[1]) if self._x is not None else 0.0
-
-    @property
-    def P_inf(self) -> float | None:
-        """Variance de Riccati courante sur z."""
-        return float(self._P[0, 0]) if self._P is not None else None
+        return float(self.x[1, 0])
 
     @staticmethod
-    def rolling_mean(z_est: np.ndarray, window: int = 24) -> np.ndarray:
-        """Moyenne glissante causale O(n) via somme cumulée."""
-        cum = np.cumsum(z_est)
-        out = np.empty(len(z_est))
-        for i in range(len(z_est)):
-            left = max(0, i - window + 1)
-            out[i] = (cum[i] - cum[left - 1]) / (i - left + 1) if left > 0 else cum[i] / (i + 1)
+    def rolling_mean(x: np.ndarray, window: int) -> np.ndarray:
+        """Moyenne mobile causale (O(1) par pas), utilisée pour z̄(T)."""
+        out = np.empty(len(x))
+        cumsum = 0.0
+        for i, v in enumerate(x):
+            cumsum += v
+            if i >= window:
+                cumsum -= x[i - window]
+            out[i] = cumsum / min(i + 1, window)
         return out
 
 
 class KalmanAdaptive(Kalman1D):
     """
-    Kalman v1.3 — Chameleon RETA.
+    Kalman auto-adaptatif (Q, R) — v1.3/v1.4 "Caméléon".
 
-    Q et R s'auto-ajustent depuis la séquence d'innovation νₖ = y_mesuré − H·x̂ₖ|ₖ₋₁
-    Le système "apprend" la physique de son environnement sans paramétrage préalable.
-
-    Paramètres :
-      alpha  : fenêtre exponentielle pour R  (0.95–0.99 recommandé)
-      beta   : fenêtre exponentielle pour Q  (0.90–0.98 recommandé)
-      R_min  : plancher de R (évite sur-confiance)
-      Q_min  : plancher de Q (évite rigidité totale du modèle)
-
-    Doc : theorie_fondamentale.md §11
+    Séquence impérative (theorie_fondamentale.md §11.1) :
+      1. prédire
+      2. adapter R depuis l'innovation (avant le gain)
+      3. calculer le gain avec R adapté
+      4. corriger l'état
+      5. adapter Q depuis l'innovation déjà utilisée (pas d'équation implicite)
     """
 
     def __init__(
         self,
-        Q: float = 2e-5,
-        R: float = 5e-4,
-        alpha: float = 0.97,   # fenêtre adaptation R
-        beta:  float = 0.95,   # fenêtre adaptation Q
-        R_min: float = 1e-6,
-        Q_min: float = 1e-8,
+        Q_init: float = 2e-5,
+        R_init: float = 5e-4,
+        alpha: float = 0.97,
+        beta: float = 0.95,
+        dt: float = 1.0,
     ):
-        super().__init__(Q=Q, R=R)
-        self.alpha  = alpha
-        self.beta   = beta
-        self.R_min  = R_min
-        self.Q_min  = Q_min
-        self._R_hat = R       # R courant auto-ajusté
-        self._Q_hat = Q       # Q courant auto-ajusté
-        self._innov_sq = 0.0  # innovation² lissée (pour monitoring)
+        super().__init__(Q=Q_init, R=R_init, dt=dt)
+        self.alpha = alpha
+        self.beta = beta
+        self.R_current = R_init
+        self.Q_current = Q_init
 
-    def update(self, obs: float) -> float:
-        """
-        Un pas Kalman adaptatif v1.3.
-        Cycle : Adapter R → Adapter Q → Prédire → Corriger.
-        """
-        if self._x is None:
-            self.reset(obs)
-            self._R_hat = self.R
-            self._Q_hat = self.Q
-            return obs
+    def update(self, r_k: float) -> tuple[float, float]:
+        x_pred = self.A @ self.x
+        P_pred = self.A @ self.P @ self.A.T + self.Q
 
-        # ── Prédiction ────────────────────────────────────────────────────
-        x_pred = self._A @ self._x
-        P_pred = self._A @ self._P @ self._A.T + self._Qm
+        innovation = r_k - (self.H @ x_pred)[0, 0]
 
-        # ── Innovation ────────────────────────────────────────────────────
-        innov = obs - float((self._H @ x_pred)[0])
-        HP_HT = float((self._H @ P_pred @ self._H.T)[0, 0])
+        # 2. Adapter R avant le gain
+        HPHt = float((self.H @ P_pred @ self.H.T)[0, 0])
+        R_inst = innovation**2 + HPHt
+        self.R_current = self.alpha * self.R_current + (1 - self.alpha) * R_inst
+        self.R = np.array([[max(self.R_current, 1e-12)]])
 
-        # ── 1. Adapter R (bruit mesure) ───────────────────────────────────
-        # R̂ₖ = α·R̂ₖ₋₁ + (1−α)·(νₖ² + H·Pₖ|ₖ₋₁·Hᵀ)
-        self._R_hat = max(
-            self.alpha * self._R_hat + (1 - self.alpha) * (innov ** 2 + HP_HT),
-            self.R_min,
-        )
-        self._Rm = np.array([[self._R_hat]])
+        # 3. Gain avec R adapté
+        S = self.H @ P_pred @ self.H.T + self.R
+        K = P_pred @ self.H.T @ np.linalg.inv(S)
 
-        # ── Gain Kalman avec R adapté ─────────────────────────────────────
-        S = HP_HT + self._R_hat
-        K = (P_pred @ self._H.T).flatten() / S
+        # 4. Correction
+        self.x = x_pred + K * innovation
+        self.P = (np.eye(2) - K @ self.H) @ P_pred
 
-        # ── Correction ────────────────────────────────────────────────────
-        x = x_pred + K * innov
-        P = (np.eye(2) - np.outer(K, self._H)) @ P_pred
+        # 5. Adapter Q après correction (trace du produit scalaire, pas la matrice complète)
+        K_norm_sq = float((K.T @ K)[0, 0])
+        Q_inst = K_norm_sq * innovation**2
+        self.Q_current = self.beta * self.Q_current + (1 - self.beta) * Q_inst
+        self.Q = np.diag([max(self.Q_current, 1e-15), max(self.Q_current, 1e-15) * 0.1])
 
-        # ── 2. Adapter Q (bruit processus) ────────────────────────────────
-        # Q̂ₖ = β·Q̂ₖ₋₁ + (1−β)·Gₖ·νₖ²·Gₖᵀ
-        outer_K = np.outer(K, K) * innov ** 2
-        Q_update = self.beta * self._Q_hat + (1 - self.beta) * float(np.trace(outer_K))
-        self._Q_hat = max(Q_update, self.Q_min)
-        self._Qm    = np.diag([self._Q_hat, self._Q_hat * 0.1])
-
-        self._innov_sq = self.alpha * self._innov_sq + (1 - self.alpha) * innov ** 2
-        self._x, self._P = x, P
-        return float(x[0])
-
-    @property
-    def R_current(self) -> float:
-        """R auto-ajusté courant."""
-        return self._R_hat
-
-    @property
-    def Q_current(self) -> float:
-        """Q auto-ajusté courant."""
-        return self._Q_hat
+        return float(self.x[0, 0]), float(self.x[1, 0])
 
     @property
     def signal_quality(self) -> float:
-        """
-        Qualité du signal ∈ [0, 1].
-        Proche de 1 → signal clair (R petit).
-        Proche de 0 → signal bruité (R grand).
-        """
-        return 1.0 / (1.0 + self._R_hat / self.R_min)
-
-    def __repr__(self) -> str:
-        return (f"KalmanAdaptive(z={self.z:.6f}, dz={self.dz:.6f}, "
-                f"R={self._R_hat:.2e}, Q={self._Q_hat:.2e}, "
-                f"quality={self.signal_quality:.3f})")
+        """Proportion de variance expliquée par le modèle vs le bruit, dans [0, 1]."""
+        total = self.Q_current + self.R_current
+        if total <= 0:
+            return 0.0
+        return float(np.clip(self.Q_current / total, 0.0, 1.0))

@@ -51,10 +51,15 @@ En combinant :
 *   **Prédiction du futur** (Point de Rupture),
 
 RETA devient un algorithme "vivant", capable de piloter un missile, un portfolio ou un circuit électronique à travers les tempêtes les plus violentes.
-
 **RETA est prête. Elle ne se contente pas de fonctionner : elle survit.**
 
 ---
-## 🧭 Navigation
-- [📖 Index de la Documentation](../INDEX.md)
-- [🏠 Accueil du Projet](../../README.md)
+
+**📂 Section 5 — Vision Stratégique**
+[Vision Stratégique](vision_strategique.md) · [Survie et Avenir](survie_et_avenir.md)
+
+**🔗 Voir aussi** : [Théorie Fondamentale](../1_fondamentaux/theorie_fondamentale.md) · [Manuel de Survie](../3_technique/manuel_de_survie.md)
+
+---
+
+[📖 Index de la Documentation](../INDEX.md) · [🏠 Accueil du Projet](../../README.md)

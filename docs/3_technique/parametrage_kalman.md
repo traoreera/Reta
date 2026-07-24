@@ -101,7 +101,11 @@ $$\dot{K}_p = \gamma_p \bar{e}^2, \quad \dot{K}_i = \gamma_i \bar{e}\cdot\bar{I}
 
 ---
 
-## Navigation
-- [📖 Index de la Documentation](../INDEX.md)
-- [📖 Versions](../VERSIONS.md)
-- [🏠 Accueil du Projet](../../README.md)
+**📂 Section 3 — Technique & Implémentation**
+[Méthodologie](methodologie.md) · [Paramétrage Kalman](parametrage_kalman.md) · [Fusion de Référentiels](fusion_referentiels.md) · [Efficience Mémoire](efficience_memoire.md) · [Manuel de Survie](manuel_de_survie.md)
+
+**🔗 Voir aussi** : [Théorie Fondamentale](../1_fondamentaux/theorie_fondamentale.md) · [Extension Dimensionnelle](../2_extensions_theoriques/extension_dimensionnelle.md) · [Versions RETA](../VERSIONS.md)
+
+---
+
+[📖 Index de la Documentation](../INDEX.md) · [🏠 Accueil du Projet](../../README.md)

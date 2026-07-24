@@ -40,8 +40,10 @@ Artifacts are written under `benchmarks/results/`.
 - `v1.3` should recover better through missing data and changing noise.
 - `v1.4` should keep the rupture bound on the safe side of the real crossing.
 
-## Documentation Links
+---
 
-- [Version summary](./VERSIONS.md)
-- [Project index](./INDEX.md)
-- [Bibliography](./bibliographie.md)
+**🔗 Voir aussi** : [Versions RETA](VERSIONS.md) · [Théorie Fondamentale](1_fondamentaux/theorie_fondamentale.md) · [Bibliographie](bibliographie.md)
+
+---
+
+[📖 Index de la Documentation](INDEX.md) · [🏠 Accueil du Projet](../README.md)

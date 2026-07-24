@@ -151,3 +151,5 @@ for obs in signal:
 ---
 
 *[← v1.2 (PI adaptatif)](../v1.2/README.md) · [← v1.1 (référence)](../v1.1/README.md) · [→ v1.4 (bound conservatif)](../v1.4/README.md) · [→ Résumé global](../VERSIONS.md)*
+
+[📖 Index de la Documentation](../INDEX.md) · [🏠 Accueil du Projet](../../README.md)

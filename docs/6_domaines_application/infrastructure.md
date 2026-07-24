@@ -139,4 +139,11 @@ La dette technique s'accumule à chaque sprint : code non refactorisé, tests ma
 
 ---
 
-*[📖 Index domaines](README.md) · [📖 Index global](../INDEX.md)*
+**📂 Section 6 — Domaines d'Application**
+[Index](README.md) · [Finance](finance.md) · [IA & LLM](ia_llm.md) · [Physique](physique.md) · [Cybersécurité](cybersecurite.md) · [Santé](sante.md) · [Infrastructure](infrastructure.md) · [Social](social.md)
+
+**🔗 Voir aussi** : [Théorie Fondamentale](../1_fondamentaux/theorie_fondamentale.md) · [Extension Dimensionnelle](../2_extensions_theoriques/extension_dimensionnelle.md)
+
+---
+
+[📖 Index de la Documentation](../INDEX.md) · [🏠 Accueil du Projet](../../README.md)

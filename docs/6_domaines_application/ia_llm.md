@@ -21,15 +21,27 @@ Un LLM en conversation longue s'éloigne progressivement du sujet initial. Le mo
 | $Y_{max}$ | Seuil d'incohérence thématique (ex. : distance cosine > 0.4) |
 | $t_{rupture}$ | Tour $k^*$ à partir duquel la conversation dérive irrémédiablement |
 
-### Compression RETA de la mémoire (implémentée dans ce projet)
+### Signal de dérive RETA (usage valide — v2.0, voir Critique 11)
 
-Au lieu de stocker $k$ tours complets en O(n·k) tokens :
+> ⚠️ **Correction v2.0 :** la version précédente affirmait ici une "reconstruction
+> exacte" du contenu des tours passés à partir d'une signature de 15 tokens, avec
+> erreur bornée par $P_\infty \cdot k$. C'est une erreur de fond (Critique 11,
+> `../1_fondamentaux/reponses_critiques.md`) : un Kalman à 2 états ne peut pas
+> reconstruire un contenu textuel arbitraire, et l'affirmation confond compression
+> d'un **signal de dérive scalaire** avec compression du **contenu conversationnel
+> complet**. Ce qui suit est reformulé pour ne conserver que l'usage valide.
 
-$$\text{TurnSignature}_k = (\varepsilon_k,\ \text{type},\ \Delta y_k,\ z̄_k,\ \text{label})$$
+Au lieu de stocker $k$ tours complets pour détecter la dérive, on peut stocker
+uniquement un **signal de surveillance** compact par tour :
 
-Coût : **15 tokens** par tour, compression **236× à k=25**.
+$$\text{DriftSignature}_k = (\varepsilon_k,\ \text{type},\ \Delta y_k,\ \bar{z}_k)$$
 
-La reconstruction exacte est garantie à : erreur ≤ $P_\infty \cdot k = 0{,}4316 \cdot k$.
+Coût : ~15 tokens par tour pour ce signal de dérive — **mais ceci ne remplace pas le
+stockage du contenu réel de la conversation**, qui reste nécessaire pour toute
+reconstruction fidèle (troncature, résumé ou RAG classiques). L'usage légitime est
+la **détection précoce de dérive thématique** ($y(t) > Y_c$ déclenche une alerte),
+pas une compression sans perte du contenu. Voir `../4_applications/memoire_llm.md` §9
+et `ia_llm_drift_monitoring.md` pour le développement complet.
 
 ### Correcteur PI dans ce contexte
 
@@ -143,4 +155,11 @@ Un attaquant peut induire une dérive comportementale progressive en soumettant 
 
 ---
 
-*[📖 Index domaines](README.md) · [📖 Index global](../INDEX.md)*
+**📂 Section 6 — Domaines d'Application**
+[Index](README.md) · [Finance](finance.md) · [IA & LLM](ia_llm.md) · [Physique](physique.md) · [Cybersécurité](cybersecurite.md) · [Santé](sante.md) · [Infrastructure](infrastructure.md) · [Social](social.md)
+
+**🔗 Voir aussi** : [Mémoire LLM](../4_applications/memoire_llm.md) · [Théorie Fondamentale](../1_fondamentaux/theorie_fondamentale.md) · [Extension Dimensionnelle](../2_extensions_theoriques/extension_dimensionnelle.md)
+
+---
+
+[📖 Index de la Documentation](../INDEX.md) · [🏠 Accueil du Projet](../../README.md)

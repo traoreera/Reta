@@ -320,6 +320,170 @@ utilisaient e_ref = 1 implicitement dans l'exemple canonique.
 
 ---
 
+## Critique 6 — « Dimension » confondue avec « composante activée »
+
+### L'objection
+
+> `extension_dimensionnelle.md` §1-2 encadre : ℝⁿ + k perturbations persistantes → ℝⁿ⁺ᵏ.
+> Ajouter une intégrale à un signal ne crée pas une direction orthogonale nouvelle dans
+> un espace vectoriel — ça active une composante déjà existante du vecteur d'état.
+
+### Statut : partiellement correct
+
+Le vrai nombre de degrés de liberté physiques est fixé dès la modélisation (ex. : 3 pour
+un drone, quelle que soit l'activité des perturbations). Ce que le document décrit est
+l'**activation causale** d'une composante nulle — pas une expansion de l'espace d'état.
+
+**Correction :** distinguer $n$ (dimension physique fixe) de $k \leq n$ (composantes
+actives, $z_i \geq \varepsilon_i$). Le coût "O(n)" du §2.2 doit se lire O(k) sur les
+composantes actives — ce qui est d'ailleurs déjà fait correctement dans le code §7.1.
+
+---
+
+## Critique 7 — t_rupture,global = min_i(t_rupture,i) : optimiste seulement sous condition
+
+### L'objection
+
+> `extension_dimensionnelle.md` §2.2/§3 encadre t_rupture,global = min_i(t_rupture,i)
+> comme règle générale. En régime stochastique isotrope, ceci sous-estime le vrai temps
+> de rupture (biais optimiste), car la probabilité qu'au moins un axe casse croît avec n
+> (fléau de la dimension appliqué à un problème de premier passage).
+
+### Statut : conditionnel — dépend de la géométrie du seuil de sécurité
+
+**Cas où min_i est incorrect (optimiste) :** le critère de rupture réel est une **norme
+jointe** (boule/ellipsoïde) — ex. : distance totale à un cap cible, rayon de tolérance
+circulaire. Le processus radial $r(t) = \|\mathbf{e}(t)\|$ suit alors un **processus de
+Bessel de dimension n** :
+
+$$dr = \frac{(n_{\text{eff}}-1)D}{r}\,dt + \sqrt{2D}\,dW_t$$
+
+et le vrai $t_{rupture}$ (premier passage de ce processus) est **plus court** que
+$\min_i(t_{rupture,i})$ dès que $n \geq 2$.
+
+**Cas où min_i est correct :** le critère de rupture est un **pavé** — seuils
+indépendants par axe (ex. : `drone_gyroscope_3d.md`, où $Y_{max}$ diffère par axe :
+5°/5°/10°, chacun issu d'une contrainte opérationnelle distincte). Le premier axe à
+dépasser sa propre limite déclenche bien la rupture — min_i est exact, pas un biais.
+
+| Géométrie du seuil | Formule correcte | Exemple documenté |
+|---|---|---|
+| Pavé (seuils indépendants) | $\min_i(t_{rup,i})$ — correct | Drone 3 axes |
+| Boule/ellipsoïde (norme jointe) | Premier passage Bessel(n) | Aucun exemple actuel — cf. `reta_nd_dispersion.md` |
+
+**Action :** documenter cette condition dans `extension_dimensionnelle.md` avant toute
+nouvelle application du min_i, pour éviter une application incorrecte dans un sens comme
+dans l'autre.
+
+---
+
+## Critique 8 — Contradiction interne : variance figée vs. variance croissante
+
+### L'objection
+
+> `extension_dimensionnelle.md` §8 (Théorème de réversibilité, point 2) établit que
+> l'erreur de reconstruction croît en √T : ‖C_k(y_n) − y_{n−k}‖ ≤ Σ√(T·P₀₀,ᵢ).
+> `logique_probabiliste.md` §2.1 utilise pourtant un écart-type **constant** √P∞,
+> indépendant de t, dans P(A→B|t) = Φ(Δ_AB(t)/√P∞). Ces deux affirmations ne peuvent
+> pas être vraies simultanément.
+
+### Statut : incorrect — erreur avérée, corrigée par la loi d'échelle de la dispersion
+
+Utiliser $\sqrt{P_\infty}$ fixe sous-estime l'incertitude réelle à mesure que $t$ croît,
+ce qui pousse $P(A\to B|t) \to 1$ plus vite que ne le justifie l'incertitude. Un second
+symptôme : $P_\infty$ est la variance **asymptotique** (convergée) du Kalman — au
+démarrage ($t=0$), la covariance $P_{00}(t)$ part d'une valeur large et décroît, elle ne
+vaut pas $P_\infty$ dès $t=0$ (cf. `reta_v13_demonstration.md` §3.1 : convergence en
+$O(1/\sqrt{M})$, pas instantanée).
+
+**Correction (dérivée de la théorie de dispersion) :**
+
+$$\boxed{P(A\to B \mid t) = \Phi\!\left(\frac{\Delta_{AB}(t)}{\sqrt{t\,(P_{00,A}+P_{00,B})}}\right)}$$
+
+Cette forme est cohérente avec le Théorème 1 (`extension_dimensionnelle.md`), et
+correspond à un problème standard de **premier passage d'un mouvement brownien avec
+dérive** (temps de premier passage : loi inverse-gaussienne, formule fermée disponible).
+
+---
+
+## Critique 9 — Passage binaire → N-aire non documenté
+
+### L'objection
+
+> `logique_probabiliste.md` §2.1 ne définit Φ(·) que pour deux référentiels A, B.
+> Le tableau §3.1 présente une distribution sur 5 référentiels sommant à 1, sans
+> qu'aucune formule du document ne permette de la reconstruire.
+
+### Statut : lacune de formulation — résultats non reproductibles en l'état
+
+Passer de $N(N-1)/2$ probabilités de mutation par paires à une distribution normalisée à
+$N$ composantes exige une construction supplémentaire (softmax des scores, résolution
+d'un système de cohérence, etc.) qui n'est écrite nulle part.
+
+**Action :** documenter explicitement la fonction $\{\Delta_{ij}(t)\} \to \{P_i(t)\}$
+avant toute réutilisation du tableau §3.1.
+
+---
+
+## Critique 10 — Terminologie « réversible » incorrecte, formule de E[T] non standard
+
+### Statut : deux erreurs mineures
+
+1. `logique_probabiliste.md` §5.1 : *« Réversible : P(A→B) ≠ P(B→A) »* — c'est l'inverse
+   de la définition standard (une chaîne réversible satisfait le bilan détaillé, qui
+   implique une forme de symétrie). Ce qui est décrit est une chaîne **asymétrique**,
+   pas réversible. À renommer.
+2. $\mathbb{E}[T_{A\to B}] = 1/\max_t(dP_{AB}/dt)$ n'est vraie pour aucune loi usuelle.
+   Avec la correction de la Critique 8 (premier passage d'un brownien avec dérive),
+   $\mathbb{E}[T_{A\to B}]$ a une formule fermée exacte (loi inverse-gaussienne) —
+   à substituer.
+
+---
+
+## Critique 11 — `memoire_llm.md` : confusion entre compression d'un signal scalaire et compression d'information sémantique arbitraire
+
+### L'objection
+
+> `memoire_llm.md` §7 affirme que l'état courant "contient l'intégralité de
+> l'information" et permet une reconstruction "sans relire un seul token", avec une
+> erreur bornée par P∞ constante. `efficience_memoire.md` et `ia_llm.md` §1 chiffrent
+> ceci en un gain de compression de 2020× (resp. 236×) avec une signature de 15 tokens
+> par tour.
+
+### Statut : **erreur de fond — la plus grave du corpus, indépendante de la dimension**
+
+Le Kalman utilisé a un état $[z,\dot z]$ — deux nombres réels. Il ne peut reconstruire
+que ce qui est **observable** dans un système linéaire à 2 degrés de liberté. Un tour de
+conversation réel porte potentiellement des milliers de bits d'information non
+redondante (fait nouveau, nom propre, contrainte numérique). Compresser cela dans une
+signature de 15 tokens et affirmer une reconstruction fidèle revient à supposer que **le
+contenu réel a été engendré par le système linéaire-gaussien à 2 états qui sert à le
+modéliser** — hypothèse fausse pour du texte libre.
+
+**Ordre de grandeur :** une signature de 15 tokens porte au plus $\sim 15\log_2(V)$ bits
+($\approx 255$ bits pour $V\approx 100\,000$) ; un tour de 1000 tokens en porte jusqu'à
+$\sim 17\,000$. Le facteur de compression annoncé (2020×) est **arithmétiquement
+correct** étant donné $n=1000$, $s=15$ — mais rien ne garantit que l'information effacée
+soit réellement redondante. C'est une violation de borne de Shannon si l'hypothèse
+implicite (contenu bas-dimensionnel) est fausse.
+
+**Ce que la théorie de dispersion apporte ici :** elle ne sauve pas la promesse de
+reconstruction — elle **quantifie pourquoi elle échoue**. Un espace d'embedding a une
+dimension effective $n_{\text{eff}}$ de l'ordre de plusieurs centaines ; le
+$\text{SNR}_{\text{correction}}(n) \sim 1/\sqrt{n}$ dérivé en physique statistique dit
+que la fidélité de toute correction/reconstruction bas-dimensionnelle se dilue avec
+$n_{\text{eff}}$. Confondre "la dispersion explique le problème" avec "la dispersion le
+résout" serait une nouvelle instance de la même erreur.
+
+**Action obligatoire :** retirer ou requalifier explicitement, dans `memoire_llm.md`,
+`efficience_memoire.md` et `ia_llm.md` §1, toute affirmation de reconstruction fidèle du
+contenu conversationnel complet. Conserver uniquement l'usage valide : détection de
+dérive (drift monitoring) sur une métrique scalaire ou bas-dimensionnelle explicite
+(distance thématique, PSI, KL — cf. `ia_llm.md` §2-4, qui restent valides). Voir
+`reta_nd_dispersion.md` §5 et `ia_llm_drift_monitoring.md` pour la version corrigée.
+
+---
+
 ## Synthèse des Modifications Appliquées
 
 | Document | Modification | Statut |
@@ -358,8 +522,13 @@ plus défendable, et directement utilisable pour l'implémentation.
 - *`../2_extensions_theoriques/extension_dimensionnelle.md` — extension nD*
 - *`../4_applications/memoire_llm.md` — mémoire LLM*
 - *`../3_technique/efficience_memoire.md` — analyse quantitative*
+---
+
+**📂 Section 1 — Fondamentaux**
+[Théorie Fondamentale](theorie_fondamentale.md) · [Analyse Complète](analyse_complete.md) · [Réponses aux Critiques](reponses_critiques.md) · [Démonstration v1.3](reta_v13_demonstration.md)
+
+**🔗 Voir aussi** : [Extension Dimensionnelle](../2_extensions_theoriques/extension_dimensionnelle.md) · [Logique Probabiliste](../2_extensions_theoriques/logique_probabiliste.md) · [Efficience Mémoire](../3_technique/efficience_memoire.md)
 
 ---
-## 🧭 Navigation
-- [📖 Index de la Documentation](../INDEX.md)
-- [🏠 Accueil du Projet](../../README.md)
+
+[📖 Index de la Documentation](../INDEX.md) · [🏠 Accueil du Projet](../../README.md)

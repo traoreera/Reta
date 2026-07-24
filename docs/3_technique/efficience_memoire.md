@@ -1,5 +1,21 @@
-# RETA — Efficience du Système de Mémoire
+# RETA — Efficience du Système de Mémoire (v2.0 — chiffres à lire sous réserve, voir bandeau)
 *Analyse quantitative : mémoire classique vs mémoire RETA par navigation dimensionnelle*
+
+> ## ⚠️ Portée des chiffres ci-dessous (v2.0 — Critique 11, `../1_fondamentaux/reponses_critiques.md`)
+>
+> Tous les gains chiffrés ci-dessous (48× à 31 281×) sont **arithmétiquement corrects
+> étant donné les hypothèses n=1000, s=15**. Mais ces hypothèses supposent implicitement
+> que le contenu d'un tour de conversation est compressible sans perte dans une
+> signature de 15 tokens — ce qui revient à supposer qu'il est engendré par le système
+> linéaire-gaussien à 2 états $[z,\dot z]$ utilisé pour le modéliser. Pour du texte
+> libre, cette hypothèse est fausse : un tour de 1000 tokens porte potentiellement
+> ~17 000 bits d'information ; une signature de 15 tokens en porte ~255. Les chiffres
+> de ce document restent utiles pour dimensionner un **signal de dérive scalaire**
+> (cf. `../4_applications/memoire_llm.md` §9), pas pour évaluer un système de mémoire
+> conversationnelle à reconstruction fidèle. Voir aussi `n_eff` dans
+> `../2_extensions_theoriques/reta_nd_dispersion.md` §5.2, qui quantifie l'écart entre
+> la dimension du signal réellement suivi (ici 2) et la dimension effective du contenu
+> sémantique réel (plusieurs centaines).
 
 ---
 
@@ -186,13 +202,13 @@ seulement **5 snapshots supplémentaires** — négligeable sur l'ensemble.
 > dès le **2ème tour de conversation**, sans paramètre à ajuster.
 
 ---
+---
 
-*Lire en parallèle :*
-- *`../1_fondamentaux/theorie_fondamentale.md` — théorie de base RETA*
-- *`../2_extensions_theoriques/extension_dimensionnelle.md` — généralisation nD et procédure inverse*
-- *`../4_applications/memoire_llm.md` — architecture de mémoire LLM*
+**📂 Section 3 — Technique & Implémentation**
+[Méthodologie](methodologie.md) · [Paramétrage Kalman](parametrage_kalman.md) · [Fusion de Référentiels](fusion_referentiels.md) · [Efficience Mémoire](efficience_memoire.md) · [Manuel de Survie](manuel_de_survie.md)
+
+**🔗 Voir aussi** : [Théorie Fondamentale](../1_fondamentaux/theorie_fondamentale.md) · [Extension Dimensionnelle](../2_extensions_theoriques/extension_dimensionnelle.md) · [Mémoire LLM](../4_applications/memoire_llm.md)
 
 ---
-## 🧭 Navigation
-- [📖 Index de la Documentation](../INDEX.md)
-- [🏠 Accueil du Projet](../../README.md)
+
+[📖 Index de la Documentation](../INDEX.md) · [🏠 Accueil du Projet](../../README.md)

@@ -1,5 +1,10 @@
-# RETA — Extension Dimensionnelle Bidirectionnelle
+# RETA — Extension Dimensionnelle Bidirectionnelle (v2.0)
 *Expansion ℝⁿ → ℝⁿ⁺ᵏ et contraction ℝⁿ → ℝⁿ⁻ᵏ par perturbations persistantes*
+
+> **Corrections v2.0 :**
+> 1. Distinction explicite entre dimension physique `n` et composantes actives `k` (→ corrige la confusion « métaphore vs algèbre », voir note §1).
+> 2. Régime stochastique ajouté : quand le bruit résiduel n'est pas négligeable, le temps de rupture global n'est pas `min_i(t_rupture,i)` mais le premier passage d'un processus de Bessel(`n`) (→ corrige le biais optimiste sous bruit isotrope, voir §3).
+> 3. Bornes et périmètre de validité clarifiés pour chaque régime.
 
 ---
 
@@ -7,12 +12,14 @@
 
 La théorie RETA (décrite dans `../1_fondamentaux/theorie_fondamentale.md`) établit qu'un système borné en 1D échappe à ses limites sous perturbation persistante. Ce document généralise ce mécanisme à n dimensions et introduit la **procédure inverse par substitution**.
 
-**Définition 1 (Expansion dimensionnelle) :**
+**Définition 1 (Expansion dimensionnelle — sens info-géométrique) :**
 Soit $y_1 \in C(\mathbb{R}^+)$ un signal unidimensionnel — par exemple $y_1(t) = \arctan(t)$. On appelle **expansion dimensionnelle par la perturbation** $z_i$ l'opération :
 
 $$T_{z_i} : y_i \mapsto y_{i+1}, \quad y_{i+1}(t) = y_i(t) + \int_0^t z_i(\tau)\,d\tau$$
 
 L'opérateur $T_{z_i}$ est une translation non-linéaire dans l'espace des fonctions intégrables. La famille $\{T_{z_i}\}_{i=1}^k$ est commutative : $T_{z_i} \circ T_{z_j} = T_{z_j} \circ T_{z_i}$ pour $i \neq j$.
+
+> **⚠️ Précision terminologique (correction v2.0) :** Ici, « dimension » désigne une **composante fonctionnelle active** dans l'espace des signaux, pas une dimension physique de l'espace ambiant. Un drone a toujours 3 axes physiques (roll, pitch, yaw), mais si une perturbation $z_i(t) \geq \varepsilon_i$ n'est présente que sur 2 axes, alors $k=2$ composantes sont actives alors que $n=3$ dimensions physiques existent. Le Lemme 1 ci-dessous utilise $k$ pour les composantes actives, $n$ pour la dimension physique fixe. Les deux ne sont pas interchangeables.
 
 **Définition 2 (Contraction par substitution) :**
 Soit $\hat{z}_i$ une estimation de $z_i$ (par mesure directe ou filtre de Kalman). On appelle **contraction dimensionnelle** l'opération inverse :
@@ -21,8 +28,12 @@ $$T_{\hat{z}_i}^{-1} : y_{i+1} \mapsto \hat{y}_i, \quad \hat{y}_i(t) = y_{i+1}(t
 
 La contraction est exacte ($\hat{y}_i = y_i$) si $\hat{z}_i = z_i$ p.p. L'erreur de reconstruction est bornée par $\|z_i - \hat{z}_i\|_{L^1}$, elle-même majorée par la variance du filtre de Kalman.
 
-**Lemme 1 (Espace effectif) :**
-Un système en ℝⁿ soumis à $k$ perturbations persistantes $z_i(t) \geq \varepsilon_i > 0$ indépendantes évolue dans un espace de dimension $n + k$ au sens où $y_{n+k}(t) = y_n(t) + \sum_{i=1}^k \int_0^t z_i(\tau)\,d\tau$ n'est pas borné dans ℝⁿ (aucune fonction de Lyapunov ne peut le confiner dans une boule de ℝⁿ pour $t \to \infty$).
+**Lemme 1 (Espace effectif — distinguer $n$ et $k$) :**
+Soit $n$ le nombre de dimensions physiques du système (fixe), et $k \leq n$ le nombre de composantes où une perturbation $z_i(t) \geq \varepsilon_i > 0$ est active. Alors le système évolue dans un espace de **rang effectif** $n$, dont $k$ directions sont non-bornées :
+
+$$y_{n}(t) = y_{n-k}(t) + \sum_{i=1}^k \int_0^t z_i(\tau)\,d\tau \notin B_{Y_{\max}} \text{ pour } t \to \infty$$
+
+Aucune fonction de Lyapunov ne peut confiner le système dans une boule de ℝⁿ si $k \geq 1$. Le cas $k = n$ redonne la version originale du lemme. **Cette distinction est cruciale** : ajouter une perturbation ne crée pas une nouvelle dimension algébrique (on reste dans ℝⁿ), mais active une direction existante qui devient divergente.
 
 ---
 
@@ -40,35 +51,39 @@ $$\vdots$$
 
 $$y_n(t) = y_{n-1}(t) + \int_0^t z_n(\tau)\,d\tau$$
 
-### 2.2 Règle générale
+### 2.2 Règle générale (version corrigée v2.0)
 
-$$\boxed{\mathbb{R}^n + k \text{ perturbations persistantes} \;\rightarrow\; \mathbb{R}^{n+k}}$$
+$$\boxed{\text{ℝⁿ avec } k \leq n \text{ perturbations actives} \;\rightarrow\; k \text{ directions divergentes dans ℝⁿ}}$$
 
-Le coût computationnel de chaque expansion est **O(n)** — une intégrale, pas une multiplication matricielle.
+Le coût computationnel de chaque expansion est **O(k)** — une intégrale par composante active, pas de multiplication matricielle.
 
 > **Périmètre de validité :** La condition $z_i(t) \geq \varepsilon_i > 0$ est requise pour garantir l'expansion.
 > Pour les systèmes où $z_i$ oscille (turbulence, vent avec rafales), la condition affaiblie
 > $\bar{z}_i(T) \geq \varepsilon_i$ sur la moyenne temporelle suffit — le t_rupture est alors calculé
 > avec la perturbation moyenne $\bar{z}_i$.
 
-**Application au cas nD — Condition affaiblie par dimension :**
+**Application au cas nD — Deux régimes :**
 
-Pour un système à $n$ dimensions avec perturbations oscillantes, on définit la moyenne temporelle sur une fenêtre $T$ :
+La formule de $t_{\text{rupture global}}$ change selon qu'on est en régime déterministe ou stochastique :
 
-$$\bar{z}_i(T) = \frac{1}{T}\int_0^T z_i(\tau)\,d\tau, \quad i = 1, \ldots, n$$
+| Régime | Condition | Formule de $t_{\text{rupture}}$ |
+|--------|-----------|-------------------------------|
+| **Déterministe pur** $^\dagger$ | $z_i$ connus exactement, pas de bruit résiduel | $t_{\text{global}} = \min_i\left(\dfrac{Y_{\max,i} - \pi/2}{\bar{z}_i(T)}\right)$ |
+| **Stochastique isotrope** $^\ddagger$ | bruit résiduel $\sim \mathcal{N}(0,D)$ par composante | premier passage du processus de Bessel($n$) (cf. §3 ci-dessous) |
 
-Le temps de rupture par dimension devient alors :
+> $^\dagger$ La borne $t_{\text{global}} = \min_i$ est correcte quand les $z_i$ sont déterministes et connus exactement. C'est le cas des perturbations modélisées (dérive thermique, inflation, accumulation buffer). Elle est aussi utilisable comme borne conservative grossière dans tous les cas.
+>
+> $^\ddagger$ Dès qu'une composante stochastique résiduelle persiste (mesure bruitée, Kalman non convergé), le $ \min_i$ sous-estime systématiquement le vrai temps de rupture : la probabilité qu'au moins un axe dépasse son seuil croît avec $n$ (fléau de la dimension appliqué au premier passage). La correction via Bessel($n$) est développée au §3.
 
-$$t_{\text{rupture},i} \geq \frac{Y_{\max,i} - \frac{\pi}{2}}{\bar{z}_i(T)}$$
+**Condition affaiblie classique (déterministe oscillant) :**
 
-Et la rupture globale au premier dépassement :
+Pour une dimension $i$ où $z_i$ oscille mais reste positive en moyenne :
 
-$$\boxed{t_{\text{rupture global}} = \min_i\left(\frac{Y_{\max,i} - \frac{\pi}{2}}{\bar{z}_i(T)}\right)}$$
+$$t_{\text{rupture},i} \geq \frac{Y_{\max,i} - \frac{\pi}{2}}{\bar{z}_i(T)}, \quad \bar{z}_i(T) = \frac{1}{T}\int_0^T z_i(\tau)\,d\tau$$
 
-> **Condition suffisante pour la validité :** $\bar{z}_i(T) \geq \varepsilon_i > 0$ pour tout $i$.
-> Si une dimension $i_0$ vérifie $\bar{z}_{i_0}(T) \leq 0$, cette dimension est **hors-cadre RETA** :
-> la dérive n'est pas persistante et le modèle ne s'applique pas sur cet axe.
-> Le système reste analysable sur les $n-1$ autres dimensions.
+> **Condition suffisante :** $\bar{z}_i(T) \geq \varepsilon_i > 0$ pour tout $i$ actif.
+> Si une composante $i_0$ vérifie $\bar{z}_{i_0}(T) \leq 0$, cette direction est **hors-cadre RETA** :
+> la dérive n'y est pas persistante et le modèle ne s'applique pas sur cet axe.
 
 ### 2.3 Table d'expansion
 
@@ -84,21 +99,47 @@ Chaque dimension **n'existe pas avant que sa perturbation ne la force à exister
 
 ---
 
-## 3. Le Temps de Rupture par Dimension
+## 3. Le Temps de Rupture par Dimension (v2.0)
 
-Chaque dimension i a son propre temps de rupture :
+Le calcul de $t_{\text{rupture}}$ dépend du régime. Deux cas sont à distinguer.
+
+### 3.1 Régime déterministe (perturbations connues exactement)
+
+Chaque composante active $i$ a son propre temps de rupture :
 
 $$t_{\text{rupture},i} \geq \frac{Y_{\max,i} - \frac{\pi}{2}}{\varepsilon_i}$$
 
-La rupture globale du système survient au **minimum** :
+La rupture globale du système survient au **minimum** des composantes actives ($k \leq n$) :
 
-$$\boxed{t_{\text{rupture global}} = \min_i\left(t_{\text{rupture},i}\right)}$$
+$$\boxed{t_{\text{rupture global}} = \min_{i=1}^k\left(t_{\text{rupture},i}\right)}$$
 
 > **Note — Valeur exacte vs borne conservative :**
 > La borne $t \geq (Y_{\max} - 1{,}57)/\varepsilon$ est pessimiste par construction.
 > Pour $Y_{\max} = 10$, $\varepsilon = 0{,}59$ : borne = **14,28 s**.
 > La valeur exacte (Newton-Raphson sur l'équation transcendante) : **t = 3,66 s**.
 > La borne sert à la **certification de sécurité** ; la valeur exacte à la **prédiction nominale**.
+
+### 3.2 Régime stochastique (bruit résiduel isotrope) — correction Bessel
+
+Quand un bruit résiduel $\xi_i(t) \sim \mathcal{N}(0, D)$ s'ajoute indépendamment sur chaque composante, la **norme** $r(t) = \|y(t)\|$ suit un **processus de Bessel** de dimension $n$ :
+
+$$dr = \frac{(n-1)D}{r}\,dt + \|z(t)\|\,dt + \sqrt{2D}\,dW_t$$
+
+Le terme $(n-1)D/r$ est une **force entropique radiale** : purement géométrique (volume de la coquille sphérique en dimension $n$), elle pousse le système vers l'extérieur indépendamment de toute perturbation $z_i$.
+
+Le temps de premier passage de $r(0) = r_0$ à $r = Y_{\max}$ est le véritable $t_{\text{rupture}}$ :
+
+$$\boxed{t_{\text{rupture}}^{\text{Bessel}}(n) = \mathbb{E}\bigl[\inf\{t \geq 0 : r(t) \geq Y_{\max}\}\bigr]}$$
+
+**Propriété fondamentale :** Pour tout $n \geq 2$,
+
+$$\mathbb{E}\bigl[t_{\text{rupture}}^{\text{Bessel}}(n)\bigr] \;<\; \min_{i=1}^n\bigl(\mathbb{E}[t_{\text{rupture},i}]\bigr)$$
+
+L'écart grandit avec $n$. C'est le **fléau de la dimension** appliqué au premier passage : en dimension $n \geq 2$, le système global casse **avant** la plus précoce des ruptures individuelles prédites par axe, parce que la norme累计 plus vite que chaque composante prise isolément.
+
+> **Exemple — Drone 3 axes (v1.3 §6) :** Dans la simulation actuelle, Roll casse à $t=252$s, Pitch à $t=258$s, Yaw à $t=193$s. Le $t_{\text{rupture}}$ réel (norme d'attitude 3D) est **inférieur à 193s** — le minimum des trois est déjà un biais optimiste. La correction Bessel($n=3$) donne la borne correcte.
+
+> **Condition d'application :** Bruits indépendants et de variance comparable entre axes. Si les axes sont corrélés (couplage aérodynamique entre roll et pitch), remplacer $n$ par la **dimension effective** $n_{\text{eff}} = (\operatorname{tr} \Sigma)^2 / \operatorname{tr}(\Sigma^2)$ (participation ratio de la matrice de covariance), avec $n_{\text{eff}} \leq n$. Sans cette correction, la pénalité Bessel surestime l'effet dimensionnel pour des données corrélées.
 
 ---
 
@@ -260,19 +301,24 @@ avec les propriétés suivantes :
 
 | Opération | Formule | Coût | Condition |
 |---|---|---|---|
-| Ouvrir dimension i | $y_i = y_{i-1} + \int z_i\,dt$ | O(n) | $z_i \geq \varepsilon > 0$ |
-| Fermer dimension i | $y_{i-1} = y_i - \int \hat{z}_i\,dt$ | O(n) | $\hat{z}_i$ observable |
-| Temps d'ouverture | $t_{\text{rup}} \geq (Y_{\max} - 1{,}57)/\varepsilon$ | O(1) | borne conservative |
-| Temps d'ouverture exact | Newton-Raphson sur équation transcendante | O(iter) | solution nominale |
-| Temps de fermeture | $t_{\text{col}} = \Delta y / \varepsilon_{\text{ctrl}}$ | O(1) | symétrique |
+| Activer composante $i$ | $y_i = y_{i-1} + \int z_i\,dt$ | O(k) | $z_i \geq \varepsilon > 0$ |
+| Désactiver composante $i$ | $y_{i-1} = y_i - \int \hat{z}_i\,dt$ | O(k) | $\hat{z}_i$ observable |
+| $t_{\text{rup}}$ déterministe | $\min_i\bigl((Y_{\max,i} - \pi/2)/\varepsilon_i\bigr)$ | O(1) | $z_i$ connus exactement |
+| $t_{\text{rup}}$ stochastique | Premier passage Bessel($n$) | numérique | bruit isotrope |
+| $t_{\text{col}}$ | $\Delta y / \varepsilon_{\text{ctrl}}$ | O(1) | symétrique |
 | Erreur résiduelle | $\leq P_{00}$ Kalman | — | Kalman convergé |
 
 ---
 
 *Ce document étend `../1_fondamentaux/theorie_fondamentale.md` vers la généralisation n-dimensionnelle.*
 *La théorie de base (système canonique, PI, trois temps caractéristiques) reste inchangée.*
+---
+
+**📂 Section 2 — Extensions Théoriques**
+[Extension Dimensionnelle](extension_dimensionnelle.md) · [Logique Probabiliste](logique_probabiliste.md)
+
+**🔗 Voir aussi** : [Théorie Fondamentale](../1_fondamentaux/theorie_fondamentale.md) · [Fusion de Référentiels](../3_technique/fusion_referentiels.md) · [Efficience Mémoire](../3_technique/efficience_memoire.md)
 
 ---
-## 🧭 Navigation
-- [📖 Index de la Documentation](../INDEX.md)
-- [🏠 Accueil du Projet](../../README.md)
+
+[📖 Index de la Documentation](../INDEX.md) · [🏠 Accueil du Projet](../../README.md)

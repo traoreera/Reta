@@ -63,8 +63,13 @@ RETA peut détecter des attaques "low and slow" qui passent sous le radar des se
 | **Électronique** | Stress thermique | Pics de courant | Claquage/Fusion |
 | **Finance** | Capital réel | Frais/Inflation | Faillite/Perte nette |
 | **Cyber** | Données sortantes | Exfiltration lente | Fuite de données critique |
+---
+
+**📂 Section 4 — Applications**
+[Index](index.md) · [Mémoire LLM](memoire_llm.md)
+
+**🔗 Voir aussi** : [Efficience Mémoire](../3_technique/efficience_memoire.md) · [Extension Dimensionnelle](../2_extensions_theoriques/extension_dimensionnelle.md) · [Domaines d'Application](../6_domaines_application/README.md)
 
 ---
-## 🧭 Navigation
-- [📖 Index de la Documentation](../INDEX.md)
-- [🏠 Accueil du Projet](../../README.md)
+
+[📖 Index de la Documentation](../INDEX.md) · [🏠 Accueil du Projet](../../README.md)
