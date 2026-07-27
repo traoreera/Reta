@@ -59,6 +59,18 @@ def effective_dimension(cov: np.ndarray) -> float:
     return float(tr**2 / tr_sq)
 
 
+def is_crisis_regime(n_eff: float) -> bool:
+    """
+    True si la condition de Feller (n_eff >= 2) est violée : l'origine
+    devient une barrière accessible pour le processus CIR/BESQ sous-jacent
+    à `t_rupture_joint`. En contexte financier, n_eff < 2 signale une
+    corrélation extrême entre actifs (perte de diversification, crash
+    systémique) — c'est un signal en soi, pas seulement une contrainte
+    numérique à contourner (cf. RETAND._residual_covariance).
+    """
+    return n_eff < 2.0
+
+
 def cir_params(n_eff: float, D: float, Kp: float) -> tuple[float, float, float]:
     """Convertit (n_eff, D, Kp) en paramètres CIR (kappa, theta, sigma)."""
     if n_eff < 2:

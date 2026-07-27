@@ -33,7 +33,26 @@ import math
 import numpy as np
 
 from .core import RETAReferential
-from .dispersion import effective_dimension, first_passage_time
+from .dispersion import effective_dimension, first_passage_time, is_crisis_regime
+
+
+class FellerConditionViolated(ValueError):
+    """
+    n_eff < 2 : la condition de Feller est violée, l'origine devient une
+    barrière accessible pour le processus CIR/BESQ sous-jacent. En finance,
+    c'est le signal d'une corrélation extrême entre actifs (crash
+    systémique) — traité ici comme une exception explicite plutôt que
+    masqué par un clamp silencieux à 2.0 (correction du point 1).
+    """
+
+    def __init__(self, n_eff_raw: float):
+        self.n_eff_raw = n_eff_raw
+        super().__init__(
+            f"n_eff={n_eff_raw:.3f} < 2 : condition de Feller violée "
+            "(corrélation extrême / régime de crise). t_rupture_joint() "
+            "n'est pas défini dans ce régime ; voir crisis_fallback= pour "
+            "un comportement dégradé explicite plutôt qu'une exception."
+        )
 
 
 class RETAND:
@@ -81,7 +100,19 @@ class RETAND:
         return np.array([axis.history[-1].e for axis in self.axes])
 
     def _residual_covariance(self, window: int = 30) -> np.ndarray:
-        """Covariance empirique des erreurs récentes par axe (pour n_eff)."""
+        """
+        Covariance empirique régularisée (shrinkage Ledoit-Wolf) des erreurs
+        récentes par axe, pour n_eff.
+
+        Correction (point 2) : `np.cov` brut sur une fenêtre courte
+        (window=30 par défaut) est mal conditionné dès que n approche ou
+        dépasse la dizaine d'actifs — recommandé T >= 3*n. Le shrinkage
+        Ledoit-Wolf mélange la covariance empirique avec une cible
+        structurée (proportionnelle à l'identité), ce qui stabilise
+        l'estimation sans supposer l'indépendance des axes. Si
+        scikit-learn n'est pas installé, on retombe sur `np.cov` brut
+        (avec avertissement) plutôt que d'échouer silencieusement.
+        """
         histories = [
             np.array([s.e for s in axis.history[-window:]]) for axis in self.axes
         ]
@@ -89,7 +120,28 @@ class RETAND:
         if min_len < 2:
             return np.eye(self.n)
         stacked = np.stack([h[-min_len:] for h in histories], axis=1)  # (T, n)
-        return np.cov(stacked, rowvar=False)
+
+        if min_len < 3 * self.n:
+            import warnings
+            warnings.warn(
+                f"_residual_covariance: fenêtre courte ({min_len} obs pour "
+                f"{self.n} axes, recommandé >= {3 * self.n}) — n_eff peut "
+                "être instable même après shrinkage.",
+                stacklevel=2,
+            )
+
+        try:
+            from sklearn.covariance import LedoitWolf
+            return LedoitWolf().fit(stacked).covariance_
+        except ImportError:
+            import warnings
+            warnings.warn(
+                "scikit-learn indisponible : _residual_covariance retombe "
+                "sur np.cov brut (non régularisé). `pip install scikit-learn` "
+                "recommandé pour un n_eff stable en haute dimension.",
+                stacklevel=2,
+            )
+            return np.cov(stacked, rowvar=False)
 
     def _estimate_D(self) -> float:
         """
@@ -103,6 +155,15 @@ class RETAND:
         r_values = [axis.kalman.R_current for axis in self.axes]
         return max(float(np.mean(r_values)) / self.dt, 1e-12)
 
+    def n_eff_diagnostics(self, n_eff: float | None = None) -> tuple[float, bool]:
+        """
+        Renvoie (n_eff_brut, crisis_flag) sans aucun clamp — à appeler
+        explicitement pour surveiller le régime de corrélation, y compris
+        quand t_rupture_joint() est utilisé avec crisis_fallback="clamp".
+        """
+        n_eff_val = n_eff if n_eff is not None else effective_dimension(self._residual_covariance())
+        return n_eff_val, is_crisis_regime(n_eff_val)
+
     def t_rupture_joint(
         self,
         Y_max: float,
@@ -110,6 +171,7 @@ class RETAND:
         n_eff: float | None = None,
         Kp: float | None = None,
         quantile: float = 0.5,
+        crisis_fallback: str = "raise",
     ) -> float:
         """
         Premier passage semi-analytique (Bessel/CIR) pour un seuil de norme jointe.
@@ -117,15 +179,37 @@ class RETAND:
         D, n_eff, Kp sont estimés automatiquement si non fournis :
           - D      : `_estimate_D()` (proxy via R_current des Kalman)
           - n_eff  : participation ratio de la covariance empirique des erreurs
+                     (régularisée par shrinkage Ledoit-Wolf, cf. `_residual_covariance`)
           - Kp     : moyenne des Kp courants par axe (régulation supposée isotrope)
+
+        Correction (point 1) : n_eff n'est plus clampé silencieusement à 2.0.
+        Si la condition de Feller est violée (n_eff < 2, corrélation extrême /
+        régime de crise), le comportement dépend de `crisis_fallback` :
+          - "raise" (défaut) : lève `FellerConditionViolated` — le régime
+            n'est pas défini pour ce modèle, mieux vaut le savoir.
+          - "zero"  : retourne 0.0 (rupture immédiate) — hypothèse
+            conservative raisonnable en gestion de risque : n_eff -> 1
+            signifie que tous les axes bougent ensemble, donc la marge de
+            diversification qui retarde la rupture a disparu.
+          - "clamp" : ancien comportement (n_eff force à 2.0) — pour
+            compatibilité descendante uniquement, déconseillé en production.
         """
         if not all(axis.history for axis in self.axes):
             raise RuntimeError("t_rupture_joint() nécessite au moins un step() par axe")
+        if crisis_fallback not in ("raise", "zero", "clamp"):
+            raise ValueError('crisis_fallback doit être "raise", "zero" ou "clamp"')
 
         r0 = float(np.linalg.norm(self._current_error_vector()))
         D_val = D if D is not None else self._estimate_D()
         n_eff_val = n_eff if n_eff is not None else effective_dimension(self._residual_covariance())
-        n_eff_val = max(n_eff_val, 2.0)  # condition de Feller (dispersion.cir_params)
         Kp_val = Kp if Kp is not None else float(np.mean([axis.pi.Kp for axis in self.axes]))
+
+        if is_crisis_regime(n_eff_val):
+            if crisis_fallback == "raise":
+                raise FellerConditionViolated(n_eff_val)
+            elif crisis_fallback == "zero":
+                return 0.0
+            else:  # "clamp"
+                n_eff_val = 2.0
 
         return first_passage_time(Y_max, r0, n_eff_val, D_val, Kp_val, quantile=quantile)

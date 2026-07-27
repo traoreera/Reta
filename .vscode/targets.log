@@ -1,0 +1,761 @@
+make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+# GNU Make 4.4.1
+# Built for x86_64-unknown-linux-gnu
+# Copyright (C) 1988-2023 Free Software Foundation, Inc.
+# License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>
+# This is free software: you are free to change and redistribute it.
+# There is NO WARRANTY, to the extent permitted by law.
+
+# Make data base, printed on Mon Jul 27 10:13:55 2026
+
+# Variables
+
+# environment
+MEMORY_PRESSURE_WRITE = c29tZSAyMDAwMDAgMjAwMDAwMAA=
+# environment
+GDK_BACKEND = wayland
+# environment
+LC_ALL = C
+# environment
+NO_AT_BRIDGE = 1
+# environment
+MXC_BIN_DIR = /app/extra/vscode/resources/app/node_modules.asar.unpacked/@microsoft/mxc-sdk/bin
+# environment
+GTK_RC_FILES = /etc/gtk/gtkrc:/home/eliezer/.gtkrc:/home/eliezer/.config/gtkrc
+# environment
+PULSE_SERVER = unix:/run/flatpak/pulse/native
+# environment
+SBX_CHROME_API_RQ = 1
+# environment
+VSCODE_CRASH_REPORTER_PROCESS_TYPE = extensionHost
+# environment
+VSCODE_CWD = /home/eliezer
+# makefile (from 'makefile', line 5)
+REPORT_DIR = $(CURDIR)/reports
+# default
+MAKE_COMMAND := make
+# automatic
+@D = $(patsubst %/,%,$(dir $@))
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# default
+.VARIABLES := 
+# environment
+PWD = /home/eliezer/devs/mylib
+# environment
+ZYPAK_ZYGOTE_STRATEGY_SPAWN = 1
+# automatic
+%D = $(patsubst %/,%,$(dir $%))
+# environment
+GI_TYPELIB_PATH = /app/lib/girepository-1.0
+# environment
+MAIL = /var/spool/mail/eliezer
+# environment
+XDG_DATA_DIRS = /app/share:/usr/share:/usr/share/runtime/share:/run/host/user-share:/run/host/share
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# automatic
+%F = $(notdir $%)
+# environment
+VSCODE_CODE_CACHE_PATH = /home/eliezer/.var/app/com.visualstudio.code/config/Code/CachedData/1b6a188127eeaf9194f945eb6eb89a657e93c54c
+# environment
+XDG_SESSION_PATH = /org/freedesktop/DisplayManager/Session1
+# environment
+LANG = C
+# environment
+XAUTHORITY = /run/user/1000/xauth_YhHJIq
+# default
+.LOADED := 
+# default
+.INCLUDE_DIRS := /usr/include
+# environment
+MEMORY_PRESSURE_WATCH = /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/session.slice/plasma-plasmashell.service/memory.pressure
+# environment
+ALSA_CONFIG_DIR = /usr/share/alsa
+# makefile
+MAKEFLAGS = pqrR
+# environment
+COPILOT_CLI_ENABLED_FEATURE_FLAGS = SHELL_SPAWN_BACKEND
+# makefile
+CURDIR := /home/eliezer/devs/mylib
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+# environment
+VSCODE_L10N_BUNDLE_LOCATION = file:///home/eliezer/.var/app/com.visualstudio.code/data/vscode/extensions/ms-ceintl.vscode-language-pack-fr-1.130.2026072017/translations/extensions/vscode.json-language-features.i18n.json
+# environment
+ICEAUTHORITY = /run/user/1000/iceauth_nNUbmw
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# environment
+ZYPAK_LIB = /app/bin/../lib
+# environment
+MFLAGS = -pqrR
+# default
+.SHELLFLAGS := -c
+# environment
+WAYLAND_DISPLAY = wayland-0
+# environment
+XDG_CONFIG_DIRS = /app/etc/xdg:/etc/xdg
+# environment
+COPILOT_OTEL_FILE_EXPORTER_PATH = /dev/null
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# environment
+ALSA_CONFIG_PATH = /usr/share/alsa/alsa-flatpak.conf
+# environment
+XDG_SESSION_DESKTOP = KDE
+# makefile (from 'makefile', line 1)
+MAKEFILE_LIST := makefile
+# environment
+FLATPAK_SANDBOX_DIR = /home/eliezer/.var/app/com.visualstudio.code/sandbox
+# automatic
+@F = $(notdir $@)
+# environment
+VSCODE_PID = 22
+# environment
+XDG_SESSION_TYPE = wayland
+# automatic
+?D = $(patsubst %/,%,$(dir $?))
+# environment
+PYTHONUSERBASE = /var/data/python
+# environment
+AT_SPI_BUS_ADDRESS = unix:path=/run/flatpak/at-spi-bus
+# environment
+XDG_DATA_HOME = /home/eliezer/.var/app/com.visualstudio.code/data
+# environment
+SESSION_MANAGER = local/archlinux:@/tmp/.ICE-unix/1363,unix/archlinux:/tmp/.ICE-unix/1363
+# automatic
+*F = $(notdir $*)
+# environment
+CHROME_DESKTOP = code.desktop
+# environment
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/flatpak/bus
+# automatic
+<D = $(patsubst %/,%,$(dir $<))
+# environment
+VSCODE_NLS_CONFIG = {"userLocale":"fr","osLocale":"fr-fr","resolvedLanguage":"fr","defaultMessagesFile":"/app/extra/vscode/resources/app/out/nls.messages.json","languagePack":{"translationsConfigFile":"/home/eliezer/.var/app/com.visualstudio.code/config/Code/clp/6626d05cb883603fc1833fdf5237ba7e.fr/tcf.json","messagesFile":"/home/eliezer/.var/app/com.visualstudio.code/config/Code/clp/6626d05cb883603fc1833fdf5237ba7e.fr/1b6a188127eeaf9194f945eb6eb89a657e93c54c/nls.messages.json","corruptMarkerFile":"/home/eliezer/.var/app/com.visualstudio.code/config/Code/clp/6626d05cb883603fc1833fdf5237ba7e.fr/corrupted.info"},"locale":"fr","availableLanguages":{"*":"fr"},"_languagePackId":"6626d05cb883603fc1833fdf5237ba7e.fr","_languagePackSupport":true,"_translationsConfigFile":"/home/eliezer/.var/app/com.visualstudio.code/config/Code/clp/6626d05cb883603fc1833fdf5237ba7e.fr/tcf.json","_cacheRoot":"/home/eliezer/.var/app/com.visualstudio.code/config/Code/clp/6626d05cb883603fc1833fdf5237ba7e.fr","_resolvedLanguagePackCoreLocation":"/home/eliezer/.var/app/com.visualstudio.code/config/Code/clp/6626d05cb883603fc1833fdf5237ba7e.fr/1b6a188127eeaf9194f945eb6eb89a657e93c54c","_corruptedFile":"/home/eliezer/.var/app/com.visualstudio.code/config/Code/clp/6626d05cb883603fc1833fdf5237ba7e.fr/corrupted.info"}
+# environment
+__EGL_EXTERNAL_PLATFORM_CONFIG_DIRS = /etc/egl/egl_external_platform.d:/usr/lib/x86_64-linux-gnu/GL/egl/egl_external_platform.d:/usr/share/egl/egl_external_platform.d
+# makefile (from 'makefile', line 16)
+PLUGIN_REPO = http://github.com/$(AUTHOR)/$(PLUGIN_NAME).git
+# default
+MAKE_HOST := x86_64-unknown-linux-gnu
+# makefile
+SHELL = /bin/sh
+# environment
+NoDefaultCurrentDirectoryInExePath = 1
+# default
+MAKECMDGOALS := all
+# environment
+LD_LIBRARY_PATH = /app/lib
+# environment
+SANDBOX_LD_LIBRARY_PATH = /app/lib
+# environment
+SHLVL = 0
+# environment
+MAKELEVEL := 0
+# default
+MAKE = $(MAKE_COMMAND)
+# environment
+PATH = /app/bin:/app/bin:/app/bin:/usr/bin:/home/eliezer/.var/app/com.visualstudio.code/data/node_modules/bin
+# environment
+XCURSOR_PATH = /run/host/user-share/icons:/run/host/share/icons
+# default
+MAKEFILES := 
+# environment
+MOTD_SHOWN = pam
+# automatic
+^F = $(notdir $^)
+# environment
+DBUS_SYSTEM_BUS_ADDRESS = unix:path=/run/dbus/system_bus_socket
+# environment
+APPLICATION_INSIGHTS_NO_STATSBEAT = true
+# environment
+XDG_CONFIG_HOME = /home/eliezer/.var/app/com.visualstudio.code/config
+# environment
+INVOCATION_ID = f07082a5bd5548229e98feb5aff1f0cf
+# environment
+_JAVA_AWT_WM_NONREPARENTING = 1
+# environment
+ 
+make: *** No rule to make target 'all'.  Stop.
+
+VSSCRIPT_PATH = /usr/lib/python3.14/site-packages/vapoursynth/libvsscript.so
+# automatic
+?F = $(notdir $?)
+# environment
+KDE_APPLICATIONS_AS_SCOPE = 1
+# makefile (from 'makefile', line 11)
+NAME = module.py
+# environment
+XDG_SEAT = seat0
+# environment
+XDG_CURRENT_DESKTOP = KDE
+# automatic
++F = $(notdir $+)
+# environment
+XDG_SEAT_PATH = /org/freedesktop/DisplayManager/Seat0
+# environment
+DESKTOP_SESSION = plasma
+# environment
+GST_PLUGIN_SYSTEM_PATH = /app/lib/gstreamer-1.0:/usr/lib/extensions/gstreamer-1.0:/usr/lib/x86_64-linux-gnu/codecs-extra/lib/gstreamer-1.0:/usr/lib/x86_64-linux-gnu/gstreamer-1.0
+# 'override' directive
+GNUMAKEFLAGS := 
+# environment
+LOGNAME = eliezer
+# environment
+container = flatpak
+# environment
+XDG_VTNR = 1
+# makefile
+.DEFAULT_GOAL := help
+# environment
+SYSTEMD_EXEC_PID = 1396
+# environment
+NPM_CONFIG_GLOBALCONFIG = /app/etc/npmrc
+# environment
+USER = eliezer
+# default
+MAKE_VERSION := 4.4.1
+# environment
+KDE_SESSION_UID = 1000
+# makefile (from 'makefile', line 4)
+PROJECT_PATH := /home/eliezer/devs/mylib
+# 'override' directive
+.SHELLSTATUS := 0
+# environment
+MANAGERPID = 1150
+# environment
+DEBUGINFOD_URLS = https://debuginfod.archlinux.org 
+# environment
+XKB_DEFAULT_LAYOUT = fr
+# environment
+_ = /usr/bin/make
+# environment
+XDG_RUNTIME_DIR = /run/user/1000
+# makefile (from 'makefile', line 17)
+PLUGIN_DIR := plugins/myplugin
+# environment
+PULSE_CLIENTCONFIG = /run/flatpak/pulse/config
+# environment
+FC_FONTATIONS = 1
+# makefile (from 'makefile', line 10)
+TO = $(PROJECT_PATH)/backgroundtask
+# environment
+JOURNAL_STREAM = 9:19489
+# environment
+VSCODE_DOTNET_INSTALL_TOOL_ORIGINAL_HOME = /home/eliezer
+# environment
+XDG_SESSION_CLASS = user
+# environment
+GTK2_RC_FILES = /etc/gtk-2.0/gtkrc:/home/eliezer/.gtkrc-2.0:/home/eliezer/.config/gtkrc-2.0
+# environment
+HOME = /home/eliezer
+# makefile (from 'makefile', line 9)
+FROM = /path/to/module.py
+# environment
+ELECTRON_RUN_AS_NODE = 1
+# environment
+VSCODE_IPC_HOOK = /run/user/1000/vscode-bc48e1b0-1.13-main.sock
+# environment
+XDG_SESSION_ID = 2
+# default
+.RECIPEPREFIX := 
+# automatic
+<F = $(notdir $<)
+# environment
+XDG_STATE_HOME = /home/eliezer/.var/app/com.visualstudio.code/.local/state
+# default
+SUFFIXES := 
+# environment
+XDG_CACHE_HOME = /home/eliezer/.var/app/com.visualstudio.code/cache
+# makefile (from 'makefile', line 6)
+STRICT = 0
+# environment
+VSCODE_CLI = 1
+# environment
+ELECTRON_NO_ATTACH_CONSOLE = 1
+# environment
+MANAGERPIDFDID = 1151
+# environment
+DEBUG = release
+# makefile (from 'makefile', line 14)
+PLUGIN_NAME = myplugin
+# environment
+KDE_SESSION_VERSION = 6
+# default
+.FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs notintermediate shell-export archives jobserver jobserver-fifo output-sync check-symlink load
+# environment
+FLATPAK_ID = com.visualstudio.code
+# makefile (from 'makefile', line 15)
+AUTHOR = traoreera
+# environment
+KDE_FULL_SESSION = true
+# environment
+XDG_MENU_PREFIX = plasma-
+# environment
+VSCODE_ESM_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+# environment
+ZYPAK_BIN = /app/bin
+# environment
+QT_WAYLAND_RECONNECT = 1
+# variable set hash-table stats:
+# Load=143/1024=14%, Rehash=0, Collisions=14/182=8%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# . (device 41, inode 9411970): 20 files, no impossibilities.
+
+# 20 files, no impossibilities in 1 directories.
+
+# Implicit Rules
+
+# No implicit rules.
+
+# Files
+
+validate-plugins:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 220):
+	@poetry run xcore plugin health
+
+deploy:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 243):
+	@./script/install.sh
+
+ci-lint:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 144):
+	@echo "🔍 [CI] Lint xcore/..."
+	@poetry run black xcore/ --check
+	@poetry run isort xcore/ --check-only
+	@poetry run flake8 xcore/
+	@echo "✅ [CI] Lint OK"
+
+start:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 249):
+	@./script/cmd.sh start
+
+ 
+lint-fix:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 85):
+	@echo "📋 1. isort — tri des imports..."
+	@poetry run isort xcore/
+	@echo "📋 2. black — reformatage (lignes longues incluses)..."
+	@poetry run black xcore/
+	@echo "📋 3. autoflake — suppression imports inutilisés (hors __init__.py)..."
+	@poetry run autoflake --in-place --recursive \
+	           --remove-unused-variables \
+	           --ignore-init-module-imports \
+	           xcore/
+	@echo "📋 4. flake8 — vérification finale..."
+	@poetry run flake8 xcore/ || { \
+	  echo ""; \
+	  echo "⚠️  Erreurs flake8 restantes après lint-fix."; \
+	  echo "   F401 dans __init__.py : normaux (ré-exports, ignorés par .flake8)."; \
+	  echo "   Autres erreurs : correction manuelle requise."; \
+	  exit 1; \
+	}
+	@echo "✅ lint-fix terminé"
+
+pre-commit:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 105):
+	@poetry run pre-commit run --all-files
+
+benchmark:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 73):
+	@poetry run pytest tests/ --benchmark-only --benchmark-group-by=group --benchmark-warmup=on
+
+lint-check:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 80):
+	@poetry run black xcore/ --check
+	@poetry run isort xcore/ --check-only
+	@poetry run flake8 xcore/
+
+build-fast: clean install
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+docs:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 135):
+	@poetry run mkdocs serve
+
+repaire-ng:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 247):
+	@./script/repaire_ng.sh
+
+unlink:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 235):
+	@[ -L "$(TO)/$(NAME)" ] && rm "$(TO)/$(NAME)" && echo "✅ Supprimé" \
+	  || echo "⚠️  Aucun lien $(TO)/$(NAME)"
+
+test-cov:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 66):
+	@echo "🧪 Tests + couverture (xcore/)..."
+	@poetry run pytest tests/ --cov=xcore --cov-branch --cov-report=term-missing --cov-report=xml
+
+ci-security:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 171):
+	@$(MAKE) security
+	@$(MAKE) security-check
+
+add-plugin:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 207):
+	@[ -n "$(PLUGIN_NAME)" ] || { echo "❌ Fournir PLUGIN_NAME"; exit 1; }
+	@if [ ! -d "$(PLUGIN_DIR)" ]; then \
+		git clone "$(PLUGIN_REPO)" "$(PLUGIN_DIR)" || exit 1; \
+	else \
+		cd "$(PLUGIN_DIR)" && git pull || exit 1; \
+	fi
+
+poetry-ri:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 257):
+	@./script/restart_poetry.sh
+
+clean:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 264):
+	@find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null; true
+	@find . -type f \( -name "*.pyc" -o -name "*.pyo" -o -name "*.backup" \) -exec rm -f {} +
+
+stop:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 251):
+	@./script/cmd.sh stop
+
+ci-test:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 153):
+	@echo "🧪 [CI] Tests xcore/ (STRICT=$(STRICT))..."
+	@poetry run pytest tests/ \
+	  --cov=xcore \
+	  --cov-branch \
+	  --cov-report=term-missing \
+	  --cov-report=xml:coverage.xml \
+	  --cov-report=html:reports/coverage_html \
+	  -q \
+	  || { \
+	    if [ "$(STRICT)" = "1" ]; then \
+	      echo "❌ [CI] Tests échoués — branche protégée"; exit 1; \
+	    else \
+	      echo "⚠️  [CI] Tests échoués (branche non protégée)"; \
+	    fi; \
+	  }
+
+security:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 115):
+	@mkdir -p "$(REPORT_DIR)"
+	@poetry run bandit -r xcore/ -f json -o "$(REPORT_DIR)/bandit.json" \
+	  2>"$(REPORT_DIR)/bandit.stderr.log" || \
+	  echo "[WARN] Bandit a rencontré des erreurs (voir $(REPORT_DIR)/bandit.stderr.log)"
+	@poetry run bandit -r xcore/ -f txt  -o "$(REPORT_DIR)/bandit.txt" 2>>/dev/null || true
+	@echo "Rapports : $(REPORT_DIR)/bandit.json / bandit.txt"
+
+remove-app:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 245):
+	@./script/uninstall.sh
+
+ci-local:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 176):
+	@echo "🤖 Simulation CI locale..."
+	@echo ""
+	@echo "══ [1/4] Lint ══════════════════════════════"
+	@$(MAKE) ci-lint
+	@echo ""
+	@echo "══ [2/4] Tests (STRICT=1) ══════════════════"
+	@$(MAKE) ci-test STRICT=1
+	@echo ""
+	@echo "══ [3/4] Sécurité ══════════════════════════"
+	@$(MAKE) ci-security
+	@echo ""
+ 
+	@echo "══ [4/4] Build ═════════════════════════════"
+	@$(MAKE) build-prod
+	@echo ""
+	@echo "✅ Pipeline CI local terminé"
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+dev:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 47):
+	@$(MAKE) clean
+	@poetry run python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+init:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 37):
+	@chmod +x ./script/uninstall.sh ./script/install.sh ./script/cmd.sh \
+	           ./script/repaire_ng.sh ./script/restart_poetry.sh
+	$(MAKE) install
+	$(MAKE) dev
+
+# Not a target:
+all:
+#  Command line target.
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has not been updated.
+
+link:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 227):
+	@[ -n "$(FROM)" ] && [ -n "$(TO)" ] && [ -n "$(NAME)" ] \
+	  || { echo "❌ Fournir FROM, TO et NAME"; exit 1; }
+	@[ -f "$(FROM)" ] || { echo "❌ Source '$(FROM)' introuvable"; exit 1; }
+	@mkdir -p "$(TO)"
+	@ln -sf "$(PROJECT_PATH)/$(FROM)" "$(TO)/$(NAME)"
+	@echo "✅ $(TO)/$(NAME) → $(FROM)"
+
+help:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 24):
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| sort \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
+
+st:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 51):
+	@$(MAKE) clean
+	@poetry run python -m uvicorn main:app --host 0.0.0.0 --port 8000
+
+build: clean install lint-fix
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+restart:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 253):
+	@./script/cmd.sh restart
+
+test:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 59):
+	@echo "🧪 Tests unitaires (xcore/)..."
+	@poetry run pytest tests/ -q -vv || { \
+		if [ "$(STRICT)" = "1" ]; then exit 1; \
+		else echo "[WARN] Échec ignoré (STRICT=0)"; fi; \
+	}
+
+rm-plugin:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 215):
+	@[ -n "$(PLUGIN_NAME)" ] || { echo "❌ Fournir PLUGIN_NAME"; exit 1; }
+	@[ -d "$(PLUGIN_DIR)" ] && rm -rf "$(PLUGIN_DIR)" && echo "✅ Supprimé" \
+	  || echo "⚠️  Plugin introuvable"
+
+pre-commit-install:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 108):
+	@poetry run pre-commit install
+
+# Not a target:
+makefile:
+#  Implicit rule search has been done.
+#  File is secondary (prerequisite of .SECONDARY).
+#  Last modified 2026-07-27 01:04:19.092116512
+#  File has been updated.
+#  Successfully updated.
+
+install:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 33):
+	@poetry lock
+	@poetry install
+
+security-check:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 123):
+	@if git ls-files | grep -q "\.env$$"; then \
+		echo "❌ .env est tracké par git !"; exit 1; \
+	else echo "✅ .env correctement ignoré"; fi
+	@if grep -rn "password\s*=\s*[\"'][^\"']*[\"']" xcore/ 2>/dev/null; then \
+		echo "❌ Mots de passe potentiels détectés !"; \
+	else echo "✅ Aucun mot de passe en dur"; fi
+
+build-prod: build ci-test ci-security
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 198):
+	@poetry build --no-cache
+
+serve:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 135):
+	@poetry run mkdocs serve
+
+status:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 255):
+	@./script/cmd.sh status
+
+scanner-core:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 269):
+	@cd xcore/kernel/security && poetry run python setup.py build_ext --inplace
+
+.PHONY: help install init dev st test test-cov test-verbose benchmark lint-check lint-fix pre-commit pre-commit-install security security-check docs ci-lint ci-test ci-security ci-local build build-prod build-fast add-plugin rm-plugin validate-plugins link unlink deploy remove-app repaire-ng start stop restart status poetry-ri clean
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+ 
+
+test-verbose:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 70):
+	@poetry run pytest tests/ -v
+
+# files hash-table stats:
+# Load=44/1024=4%, Rehash=0, Collisions=2/101=2%
+# VPATH Search Paths
+
+# No 'vpath' search paths.
+
+# No general ('VPATH' variable) search path.
+
+# strcache buffers: 1 (0) / strings = 63 / storage = 555 B / avg = 8 B
+# current buf: size = 8162 B / used = 555 B / count = 63 / avg = 8 B
+
+# strcache performance: lookups = 152 / hit rate = 58%
+# hash-table stats:
+# Load=63/8192=1%, Rehash=0, Collisions=0/152=0%
+# Finished Make data base on Mon Jul 27 10:13:55 2026
+
+ 

@@ -43,6 +43,7 @@ Bienvenue dans l'index central de la **Referential Escape Theory by Accumulation
 ### [6. Domaines d'Application](./6_domaines_application/README.md)
 *Cartographie détaillée de tous les domaines où RETA intervient.*
 - [Finance & Marchés](./6_domaines_application/finance.md) : Portefeuilles, crypto, drawdown, volatilité.
+- **[Finance Quantitative — RETA-nD & Risque](./6_domaines_application/finance_quantitative_reta_nd.md) (expérimental)** : Calibration MLE, premier passage Monte Carlo, corrections n_eff/covariance.
 - [Intelligence Artificielle & LLM](./6_domaines_application/ia_llm.md) : Dérive sémantique, distribution shift, fine-tuning, jailbreak (§1 corrigé v2.0).
 - **[IA & LLM — Drift Monitoring sur Embeddings](./6_domaines_application/ia_llm_drift_monitoring.md) 🆕 (v1.5)** : Application honnête de RETA-nD — dimension effective, détection de dérive, hypothèse falsifiable. Remplace l'usage "reconstruction" de Mémoire LLM.
 - [Systèmes Physiques](./6_domaines_application/physique.md) : Thermique, navigation inertielle, fatigue mécanique, batterie.

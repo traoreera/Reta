@@ -1,5 +1,14 @@
 # RETA en Finance & Marchés Financiers
 
+> ⚠️ L'hypothèse fondatrice de RETA (`z(t) ≥ ε > 0`, cf.
+> `1_fondamentaux/reponses_critiques.md` Critique 2) classe le bruit
+> gaussien centré comme hors-cadre — cas proche des rendements bruts.
+> Les scénarios "frais"/"drawdown" ci-dessous restent valides ; le
+> "momentum de tendance" (§2) est le plus fragile. Voir
+> **[RETA-nD appliqué au risque financier](finance_quantitative_reta_nd.md)**
+> pour une extension du module de dispersion (calibration MLE, premier
+> passage par Monte Carlo) — non validée sur données réelles.
+
 ## Vue d'ensemble
 
 Les marchés financiers sont des systèmes d'accumulation par excellence : les frais s'accumulent, les drawdowns s'enchaînent, les positions dérivient. RETA transforme chaque instrument financier en un système prévisible en calculant précisément **quand** les seuils critiques seront franchis.
